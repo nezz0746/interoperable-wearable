@@ -1,3 +1,12 @@
 [submodule "apps/contracts/lib/forge-std"]
 	path = apps/contracts/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "apps/contracts/lib/contracts"]
+	path = apps/contracts/lib/contracts
+	url = https://github.com/tokenbound/contracts
+[submodule "apps/contracts/lib/prb-test"]
+	path = apps/contracts/lib/prb-test
+	url = https://github.com/PaulRBerg/prb-test
+[submodule "apps/contracts/lib/fx-portal"]
+	path = apps/contracts/lib/fx-portal
+	url = https://github.com/0xPolygon/fx-portal
