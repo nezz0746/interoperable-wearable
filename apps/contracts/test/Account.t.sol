@@ -32,10 +32,5 @@ contract AccountTest is DSTestFull {
     uint256 fork1Id;
     uint256 fork2Id;
 
-    function setUp() public {
-        fork1Id = vm.createFork("mainnet");
-        fork2Id = vm.createFork("polygon");
-    }
-
-    function testCreateAccount() public {}
+    function setUp() public {}
 }
