@@ -59,6 +59,7 @@ contract InteropAccountNFT is
         // Create account on root chain
         _createAccount(block.chainid, address(this), tokenId);
 
+        // Emit event for side chain to listen to and create account with the same chainId
         emit CreateMainAccount(block.chainid, address(this), tokenId);
 
         _refundExcess(payable(msg.sender), price);
