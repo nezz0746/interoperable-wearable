@@ -4,7 +4,7 @@ pragma solidity ^0.8.19;
 import {Script, console2} from "forge-std/Script.sol";
 import {BaseScript} from "./Base.s.sol";
 
-import {InteropNFTMain, InteropNFTSide} from "../src/InteropNFTMain.sol";
+import {InteropNFTMain, InteropNFTSide} from "../src/InteropNFTMainFx.sol";
 
 contract DeployInteropNFT is BaseScript {
     /**
