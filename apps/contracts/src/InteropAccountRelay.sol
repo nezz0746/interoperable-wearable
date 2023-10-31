@@ -17,6 +17,8 @@ contract InteropAccountRelay is ERC6551AccountCreator {
         address mainContract,
         uint256 tokenId
     ) public {
-        _createAccount(chainId, mainContract, tokenId);
+        address account = _createAccount(chainId, mainContract, tokenId);
+
+        emit CreateSideAccount(account);
     }
 }
