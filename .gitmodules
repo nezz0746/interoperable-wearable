@@ -10,3 +10,6 @@
 [submodule "apps/contracts/lib/fx-portal"]
 	path = apps/contracts/lib/fx-portal
 	url = https://github.com/0xPolygon/fx-portal
+[submodule "apps/contracts/lib/ERC721A"]
+	path = apps/contracts/lib/ERC721A
+	url = https://github.com/chiru-labs/ERC721A
