@@ -1,2 +1,7 @@
 ds-test/=lib/forge-std/lib/ds-test/src/
 forge-std/=lib/forge-std/src/
+prb/test/=lib/prb-test/src/
+tokenbound/=lib/contracts/src/
+erc6551/=lib/contracts/lib/erc6551/src/
+openzeppelin-contracts/=lib/contracts/lib/openzeppelin-contracts
+fx-portal/=lib/fx-portal/contracts/

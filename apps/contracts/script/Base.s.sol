@@ -2,9 +2,24 @@
 pragma solidity ^0.8.19;
 
 import {Script, console2} from "forge-std/Script.sol";
-import {Counter} from "../src/Counter.sol";
 
 contract BaseScript is Script {
+    // Project specific variables
+    address goerliCheckpointManager =
+        0x2890bA17EfE978480615e330ecB65333b880928e;
+    address goerliFxRoot = 0x3d1d3E34f7fB6D26245E6640E1c50710eFFf15bA;
+    address mumbaiFxChild = 0xCf73231F28B7331BBe3124B907840A94851f9f11;
+
+    address registry = 0x000000006551c19487814612e58FE06813775758;
+    address accountProxy = 0x55266d75D1a14E4572138116aF39863Ed6596E7F;
+    address accountImplementation = 0x41C8f39463A868d3A88af00cd0fe7102F30E44eC;
+    uint256 maxSupply = 100;
+    uint256 price = 0.1 ether;
+
+    DeployementChain[] sideChains;
+    DeployementChain[] mainChains;
+    //
+
     enum Cycle {
         Local,
         Testnet,
@@ -13,7 +28,10 @@ contract BaseScript is Script {
 
     enum DeployementChain {
         Anvil,
-        Goerli
+        Goerli,
+        Mainnet,
+        Mumbai,
+        Polygon
     }
     string internal mnemonic =
         "test test test test test test test test test test test junk";
@@ -22,10 +40,21 @@ contract BaseScript is Script {
 
     mapping(DeployementChain => string forkId) public forks;
 
+    DeployementChain internal _currentChain;
+
+    constructor() {
+        forks[DeployementChain.Anvil] = "local";
+        forks[DeployementChain.Goerli] = "goerli";
+        forks[DeployementChain.Mainnet] = "mainnet";
+        forks[DeployementChain.Mumbai] = "mumbai";
+        forks[DeployementChain.Polygon] = "polygon";
+    }
+
     modifier broadcastOn(DeployementChain[] memory targetChains) {
         for (uint256 i = 0; i < targetChains.length; i++) {
             vm.createSelectFork(forks[targetChains[i]]);
             console2.log("Broadcasting on chain: ", forks[targetChains[i]]);
+            _currentChain = targetChains[i];
             vm.startBroadcast(deployerPrivateKey);
             _;
             vm.stopBroadcast();
@@ -72,5 +101,12 @@ contract BaseScript is Script {
         json = vm.serializeAddress(objectName, "address", contractAddress);
 
         vm.writeFile(filePathWithEncodePacked, json);
+    }
+
+    function _setChainsTestnet() internal {
+        sideChains = new DeployementChain[](1);
+        sideChains[0] = DeployementChain.Mumbai;
+        mainChains = new DeployementChain[](1);
+        mainChains[0] = DeployementChain.Goerli;
     }
 }

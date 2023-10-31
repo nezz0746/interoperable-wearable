@@ -9,10 +9,15 @@ fs_permissions = [
 
 [etherscan]
 goerli = { key = "${API_KEY_ETHERSCAN}" }
+mainnet = { key = "${API_KEY_ETHERSCAN}" }
+mumbai = { key = "${API_KEY_POLYGONSCAN}" }
+polygon = { key = "${API_KEY_POLYGONSCAN}" }
 
 [rpc_endpoints]
 local = "http://localhost:8545"
 goerli = "https://eth-goerli.g.alchemy.com/v2/${ALCHEMY_GOERLI_API_KEY}"
-
+mainnet = "https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_MAINNET_API_KEY}"
+polygon = "https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_POLYGON_API_KEY}"
+mumbai = "https://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_MUMBAI_API_KEY}"
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
