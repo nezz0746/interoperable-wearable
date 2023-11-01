@@ -1,5 +1,5 @@
 import { useNetwork } from "wagmi";
-import { defaultChain } from "wagmi-config";
+import { defaultChain } from "wagmi-config/wagmi";
 import { localhost } from "wagmi/chains";
 
 const useChain = () => {

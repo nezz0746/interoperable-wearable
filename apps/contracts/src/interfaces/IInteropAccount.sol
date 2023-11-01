@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.19;
 
-interface IInteropNFTMain {
+interface IInteropAccount {
     event CreateMainAccount(
         uint256 indexed chainId,
         address indexed tokenContract,

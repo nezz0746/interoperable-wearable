@@ -37,7 +37,13 @@ export default defineConfig(async () => {
     out: "generated.ts",
     plugins: [
       foundry({
-        project: "../../apps/contracts",
+        artifacts: "../../apps/contracts/out/",
+        include: [
+          "InteropAccount.sol/*.json",
+          "InteropAccountRelay.sol/*.json",
+          "ERC6551Registry.sol/*.json",
+          "AccountProxy.sol/*.json",
+        ],
         deployments,
       }),
       react({
