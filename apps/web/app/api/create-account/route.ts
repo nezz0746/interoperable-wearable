@@ -6,22 +6,7 @@ import {
   accountProxyABI,
 } from "wagmi-config/generated";
 import { decodeEventLog } from "viem";
-
-type AccountCreationArgs = {
-  chainId: bigint;
-  tokenContract: string;
-  tokenId: bigint;
-};
-
-const createAccountOnSidechain = async ({
-  chainId,
-  tokenContract,
-  tokenId,
-}: AccountCreationArgs) => {
-  // Create account on sidechain
-
-  console.log("CREATE ACCOUNT ON SIDECHAIN: ", chainId, tokenContract, tokenId);
-};
+import { createAccountOnSidechain } from "@/services/interopAccountRelay";
 
 export async function POST(req: NextRequest) {
   const body: TransactionEvent = await req.json();

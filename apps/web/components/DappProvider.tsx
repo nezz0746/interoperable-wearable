@@ -1,6 +1,6 @@
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { WagmiConfig } from "wagmi";
-import { chains, wagmiConfig } from "wagmi-config";
+import { chains, wagmiConfig } from "wagmi-config/wagmi";
 
 type DappProviderProps = {
   children: React.ReactNode;
