@@ -5,17 +5,17 @@ import {ERC6551Registry} from "erc6551/ERC6551Registry.sol";
 import {Ownable} from "openzeppelin-contracts/contracts/access/Ownable.sol";
 import {AccountProxy} from "tokenbound/AccountProxy.sol";
 
-import {IInteropNFTMain} from "./interfaces/IInteropNFTMain.sol";
+import {IInteropAccount} from "./interfaces/IInteropAccount.sol";
 import {ERC6551AccountCreator} from "./extensions/ERC6551AccountCreator.sol";
 import {ERC721A} from "ERC721A/ERC721A.sol";
 
 contract InteropAccountNFT is
-    IInteropNFTMain,
+    IInteropAccount,
     ERC721A,
     ERC6551AccountCreator,
     Ownable
 {
-    uint256 public immutable MAX_SUPPLY;
+    uint256 public immutable maxSupply;
 
     uint256 public price;
 
@@ -23,12 +23,12 @@ contract InteropAccountNFT is
         address registry,
         address accountProxy,
         address implementation,
-        uint256 maxSupply
+        uint256 _maxSupply
     )
         ERC721A("InteropNFTMain", "INFTM")
         ERC6551AccountCreator(registry, accountProxy, implementation)
     {
-        MAX_SUPPLY = maxSupply;
+        maxSupply = _maxSupply;
     }
 
     /**
@@ -48,7 +48,7 @@ contract InteropAccountNFT is
     function createMainAccount(
         address recipient
     ) public payable whenSaleActive {
-        if (_totalMinted() >= MAX_SUPPLY) revert MaxSupplyReached();
+        if (_totalMinted() >= maxSupply) revert MaxSupplyReached();
         if (msg.value < price) revert PriceNotMet();
 
         uint256 tokenId = _nextTokenId();
