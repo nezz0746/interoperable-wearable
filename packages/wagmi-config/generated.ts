@@ -1,19 +1,250 @@
 import {
-  useContractRead,
-  UseContractReadConfig,
   useContractWrite,
   UseContractWriteConfig,
   usePrepareContractWrite,
   UsePrepareContractWriteConfig,
   useContractEvent,
   UseContractEventConfig,
+  useContractRead,
+  UseContractReadConfig,
   Address,
 } from 'wagmi'
 import {
-  ReadContractResult,
   WriteContractMode,
   PrepareWriteContractResult,
+  ReadContractResult,
 } from 'wagmi/actions'
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// AccountProxy
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const accountProxyABI = [
+  {
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+    inputs: [
+      { name: '_guardian', internalType: 'address', type: 'address' },
+      {
+        name: '_initialImplementation',
+        internalType: 'address',
+        type: 'address',
+      },
+    ],
+  },
+  { type: 'error', inputs: [], name: 'AlreadyInitialized' },
+  { type: 'error', inputs: [], name: 'InvalidImplementation' },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'previousAdmin',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'newAdmin',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+    ],
+    name: 'AdminChanged',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'beacon',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'BeaconUpgraded',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'implementation',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'Upgraded',
+  },
+  { stateMutability: 'payable', type: 'fallback' },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: 'implementation', internalType: 'address', type: 'address' },
+    ],
+    name: 'initialize',
+    outputs: [],
+  },
+  { stateMutability: 'payable', type: 'receive' },
+] as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ERC6551Registry
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const erc6551RegistryABI = [
+  { type: 'error', inputs: [], name: 'AccountCreationFailed' },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'account',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'implementation',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'salt',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: false,
+      },
+      {
+        name: 'chainId',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'tokenContract',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'tokenId',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+    ],
+    name: 'ERC6551AccountCreated',
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [
+      { name: 'implementation', internalType: 'address', type: 'address' },
+      { name: 'salt', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'chainId', internalType: 'uint256', type: 'uint256' },
+      { name: 'tokenContract', internalType: 'address', type: 'address' },
+      { name: 'tokenId', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'account',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: 'implementation', internalType: 'address', type: 'address' },
+      { name: 'salt', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'chainId', internalType: 'uint256', type: 'uint256' },
+      { name: 'tokenContract', internalType: 'address', type: 'address' },
+      { name: 'tokenId', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'createAccount',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+  },
+] as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// IERC6551Registry
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const ierc6551RegistryABI = [
+  { type: 'error', inputs: [], name: 'AccountCreationFailed' },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'account',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'implementation',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'salt',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: false,
+      },
+      {
+        name: 'chainId',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'tokenContract',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'tokenId',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+    ],
+    name: 'ERC6551AccountCreated',
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [
+      { name: 'implementation', internalType: 'address', type: 'address' },
+      { name: 'salt', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'chainId', internalType: 'uint256', type: 'uint256' },
+      { name: 'tokenContract', internalType: 'address', type: 'address' },
+      { name: 'tokenId', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'account',
+    outputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: 'implementation', internalType: 'address', type: 'address' },
+      { name: 'salt', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'chainId', internalType: 'uint256', type: 'uint256' },
+      { name: 'tokenContract', internalType: 'address', type: 'address' },
+      { name: 'tokenId', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'createAccount',
+    outputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+  },
+] as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // InteropAccountNFT
@@ -409,6 +640,517 @@ export const interopAccountRelayConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // React
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link accountProxyABI}__.
+ */
+export function useAccountProxyWrite<
+  TFunctionName extends string,
+  TMode extends WriteContractMode = undefined,
+>(
+  config: TMode extends 'prepared'
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof accountProxyABI,
+          string
+        >['request']['abi'],
+        TFunctionName,
+        TMode
+      >
+    : UseContractWriteConfig<typeof accountProxyABI, TFunctionName, TMode> & {
+        abi?: never
+      } = {} as any,
+) {
+  return useContractWrite<typeof accountProxyABI, TFunctionName, TMode>({
+    abi: accountProxyABI,
+    ...config,
+  } as any)
+}
+
+/**
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link accountProxyABI}__ and `functionName` set to `"initialize"`.
+ */
+export function useAccountProxyInitialize<
+  TMode extends WriteContractMode = undefined,
+>(
+  config: TMode extends 'prepared'
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof accountProxyABI,
+          'initialize'
+        >['request']['abi'],
+        'initialize',
+        TMode
+      > & { functionName?: 'initialize' }
+    : UseContractWriteConfig<typeof accountProxyABI, 'initialize', TMode> & {
+        abi?: never
+        functionName?: 'initialize'
+      } = {} as any,
+) {
+  return useContractWrite<typeof accountProxyABI, 'initialize', TMode>({
+    abi: accountProxyABI,
+    functionName: 'initialize',
+    ...config,
+  } as any)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link accountProxyABI}__.
+ */
+export function usePrepareAccountProxyWrite<TFunctionName extends string>(
+  config: Omit<
+    UsePrepareContractWriteConfig<typeof accountProxyABI, TFunctionName>,
+    'abi'
+  > = {} as any,
+) {
+  return usePrepareContractWrite({
+    abi: accountProxyABI,
+    ...config,
+  } as UsePrepareContractWriteConfig<typeof accountProxyABI, TFunctionName>)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link accountProxyABI}__ and `functionName` set to `"initialize"`.
+ */
+export function usePrepareAccountProxyInitialize(
+  config: Omit<
+    UsePrepareContractWriteConfig<typeof accountProxyABI, 'initialize'>,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return usePrepareContractWrite({
+    abi: accountProxyABI,
+    functionName: 'initialize',
+    ...config,
+  } as UsePrepareContractWriteConfig<typeof accountProxyABI, 'initialize'>)
+}
+
+/**
+ * Wraps __{@link useContractEvent}__ with `abi` set to __{@link accountProxyABI}__.
+ */
+export function useAccountProxyEvent<TEventName extends string>(
+  config: Omit<
+    UseContractEventConfig<typeof accountProxyABI, TEventName>,
+    'abi'
+  > = {} as any,
+) {
+  return useContractEvent({
+    abi: accountProxyABI,
+    ...config,
+  } as UseContractEventConfig<typeof accountProxyABI, TEventName>)
+}
+
+/**
+ * Wraps __{@link useContractEvent}__ with `abi` set to __{@link accountProxyABI}__ and `eventName` set to `"AdminChanged"`.
+ */
+export function useAccountProxyAdminChangedEvent(
+  config: Omit<
+    UseContractEventConfig<typeof accountProxyABI, 'AdminChanged'>,
+    'abi' | 'eventName'
+  > = {} as any,
+) {
+  return useContractEvent({
+    abi: accountProxyABI,
+    eventName: 'AdminChanged',
+    ...config,
+  } as UseContractEventConfig<typeof accountProxyABI, 'AdminChanged'>)
+}
+
+/**
+ * Wraps __{@link useContractEvent}__ with `abi` set to __{@link accountProxyABI}__ and `eventName` set to `"BeaconUpgraded"`.
+ */
+export function useAccountProxyBeaconUpgradedEvent(
+  config: Omit<
+    UseContractEventConfig<typeof accountProxyABI, 'BeaconUpgraded'>,
+    'abi' | 'eventName'
+  > = {} as any,
+) {
+  return useContractEvent({
+    abi: accountProxyABI,
+    eventName: 'BeaconUpgraded',
+    ...config,
+  } as UseContractEventConfig<typeof accountProxyABI, 'BeaconUpgraded'>)
+}
+
+/**
+ * Wraps __{@link useContractEvent}__ with `abi` set to __{@link accountProxyABI}__ and `eventName` set to `"Upgraded"`.
+ */
+export function useAccountProxyUpgradedEvent(
+  config: Omit<
+    UseContractEventConfig<typeof accountProxyABI, 'Upgraded'>,
+    'abi' | 'eventName'
+  > = {} as any,
+) {
+  return useContractEvent({
+    abi: accountProxyABI,
+    eventName: 'Upgraded',
+    ...config,
+  } as UseContractEventConfig<typeof accountProxyABI, 'Upgraded'>)
+}
+
+/**
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link erc6551RegistryABI}__.
+ */
+export function useErc6551RegistryRead<
+  TFunctionName extends string,
+  TSelectData = ReadContractResult<typeof erc6551RegistryABI, TFunctionName>,
+>(
+  config: Omit<
+    UseContractReadConfig<
+      typeof erc6551RegistryABI,
+      TFunctionName,
+      TSelectData
+    >,
+    'abi'
+  > = {} as any,
+) {
+  return useContractRead({
+    abi: erc6551RegistryABI,
+    ...config,
+  } as UseContractReadConfig<
+    typeof erc6551RegistryABI,
+    TFunctionName,
+    TSelectData
+  >)
+}
+
+/**
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link erc6551RegistryABI}__ and `functionName` set to `"account"`.
+ */
+export function useErc6551RegistryAccount<
+  TFunctionName extends 'account',
+  TSelectData = ReadContractResult<typeof erc6551RegistryABI, TFunctionName>,
+>(
+  config: Omit<
+    UseContractReadConfig<
+      typeof erc6551RegistryABI,
+      TFunctionName,
+      TSelectData
+    >,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return useContractRead({
+    abi: erc6551RegistryABI,
+    functionName: 'account',
+    ...config,
+  } as UseContractReadConfig<
+    typeof erc6551RegistryABI,
+    TFunctionName,
+    TSelectData
+  >)
+}
+
+/**
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link erc6551RegistryABI}__.
+ */
+export function useErc6551RegistryWrite<
+  TFunctionName extends string,
+  TMode extends WriteContractMode = undefined,
+>(
+  config: TMode extends 'prepared'
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof erc6551RegistryABI,
+          string
+        >['request']['abi'],
+        TFunctionName,
+        TMode
+      >
+    : UseContractWriteConfig<
+        typeof erc6551RegistryABI,
+        TFunctionName,
+        TMode
+      > & {
+        abi?: never
+      } = {} as any,
+) {
+  return useContractWrite<typeof erc6551RegistryABI, TFunctionName, TMode>({
+    abi: erc6551RegistryABI,
+    ...config,
+  } as any)
+}
+
+/**
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link erc6551RegistryABI}__ and `functionName` set to `"createAccount"`.
+ */
+export function useErc6551RegistryCreateAccount<
+  TMode extends WriteContractMode = undefined,
+>(
+  config: TMode extends 'prepared'
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof erc6551RegistryABI,
+          'createAccount'
+        >['request']['abi'],
+        'createAccount',
+        TMode
+      > & { functionName?: 'createAccount' }
+    : UseContractWriteConfig<
+        typeof erc6551RegistryABI,
+        'createAccount',
+        TMode
+      > & {
+        abi?: never
+        functionName?: 'createAccount'
+      } = {} as any,
+) {
+  return useContractWrite<typeof erc6551RegistryABI, 'createAccount', TMode>({
+    abi: erc6551RegistryABI,
+    functionName: 'createAccount',
+    ...config,
+  } as any)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link erc6551RegistryABI}__.
+ */
+export function usePrepareErc6551RegistryWrite<TFunctionName extends string>(
+  config: Omit<
+    UsePrepareContractWriteConfig<typeof erc6551RegistryABI, TFunctionName>,
+    'abi'
+  > = {} as any,
+) {
+  return usePrepareContractWrite({
+    abi: erc6551RegistryABI,
+    ...config,
+  } as UsePrepareContractWriteConfig<typeof erc6551RegistryABI, TFunctionName>)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link erc6551RegistryABI}__ and `functionName` set to `"createAccount"`.
+ */
+export function usePrepareErc6551RegistryCreateAccount(
+  config: Omit<
+    UsePrepareContractWriteConfig<typeof erc6551RegistryABI, 'createAccount'>,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return usePrepareContractWrite({
+    abi: erc6551RegistryABI,
+    functionName: 'createAccount',
+    ...config,
+  } as UsePrepareContractWriteConfig<
+    typeof erc6551RegistryABI,
+    'createAccount'
+  >)
+}
+
+/**
+ * Wraps __{@link useContractEvent}__ with `abi` set to __{@link erc6551RegistryABI}__.
+ */
+export function useErc6551RegistryEvent<TEventName extends string>(
+  config: Omit<
+    UseContractEventConfig<typeof erc6551RegistryABI, TEventName>,
+    'abi'
+  > = {} as any,
+) {
+  return useContractEvent({
+    abi: erc6551RegistryABI,
+    ...config,
+  } as UseContractEventConfig<typeof erc6551RegistryABI, TEventName>)
+}
+
+/**
+ * Wraps __{@link useContractEvent}__ with `abi` set to __{@link erc6551RegistryABI}__ and `eventName` set to `"ERC6551AccountCreated"`.
+ */
+export function useErc6551RegistryErc6551AccountCreatedEvent(
+  config: Omit<
+    UseContractEventConfig<typeof erc6551RegistryABI, 'ERC6551AccountCreated'>,
+    'abi' | 'eventName'
+  > = {} as any,
+) {
+  return useContractEvent({
+    abi: erc6551RegistryABI,
+    eventName: 'ERC6551AccountCreated',
+    ...config,
+  } as UseContractEventConfig<
+    typeof erc6551RegistryABI,
+    'ERC6551AccountCreated'
+  >)
+}
+
+/**
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link ierc6551RegistryABI}__.
+ */
+export function useIerc6551RegistryRead<
+  TFunctionName extends string,
+  TSelectData = ReadContractResult<typeof ierc6551RegistryABI, TFunctionName>,
+>(
+  config: Omit<
+    UseContractReadConfig<
+      typeof ierc6551RegistryABI,
+      TFunctionName,
+      TSelectData
+    >,
+    'abi'
+  > = {} as any,
+) {
+  return useContractRead({
+    abi: ierc6551RegistryABI,
+    ...config,
+  } as UseContractReadConfig<
+    typeof ierc6551RegistryABI,
+    TFunctionName,
+    TSelectData
+  >)
+}
+
+/**
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link ierc6551RegistryABI}__ and `functionName` set to `"account"`.
+ */
+export function useIerc6551RegistryAccount<
+  TFunctionName extends 'account',
+  TSelectData = ReadContractResult<typeof ierc6551RegistryABI, TFunctionName>,
+>(
+  config: Omit<
+    UseContractReadConfig<
+      typeof ierc6551RegistryABI,
+      TFunctionName,
+      TSelectData
+    >,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return useContractRead({
+    abi: ierc6551RegistryABI,
+    functionName: 'account',
+    ...config,
+  } as UseContractReadConfig<
+    typeof ierc6551RegistryABI,
+    TFunctionName,
+    TSelectData
+  >)
+}
+
+/**
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link ierc6551RegistryABI}__.
+ */
+export function useIerc6551RegistryWrite<
+  TFunctionName extends string,
+  TMode extends WriteContractMode = undefined,
+>(
+  config: TMode extends 'prepared'
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof ierc6551RegistryABI,
+          string
+        >['request']['abi'],
+        TFunctionName,
+        TMode
+      >
+    : UseContractWriteConfig<
+        typeof ierc6551RegistryABI,
+        TFunctionName,
+        TMode
+      > & {
+        abi?: never
+      } = {} as any,
+) {
+  return useContractWrite<typeof ierc6551RegistryABI, TFunctionName, TMode>({
+    abi: ierc6551RegistryABI,
+    ...config,
+  } as any)
+}
+
+/**
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link ierc6551RegistryABI}__ and `functionName` set to `"createAccount"`.
+ */
+export function useIerc6551RegistryCreateAccount<
+  TMode extends WriteContractMode = undefined,
+>(
+  config: TMode extends 'prepared'
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof ierc6551RegistryABI,
+          'createAccount'
+        >['request']['abi'],
+        'createAccount',
+        TMode
+      > & { functionName?: 'createAccount' }
+    : UseContractWriteConfig<
+        typeof ierc6551RegistryABI,
+        'createAccount',
+        TMode
+      > & {
+        abi?: never
+        functionName?: 'createAccount'
+      } = {} as any,
+) {
+  return useContractWrite<typeof ierc6551RegistryABI, 'createAccount', TMode>({
+    abi: ierc6551RegistryABI,
+    functionName: 'createAccount',
+    ...config,
+  } as any)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link ierc6551RegistryABI}__.
+ */
+export function usePrepareIerc6551RegistryWrite<TFunctionName extends string>(
+  config: Omit<
+    UsePrepareContractWriteConfig<typeof ierc6551RegistryABI, TFunctionName>,
+    'abi'
+  > = {} as any,
+) {
+  return usePrepareContractWrite({
+    abi: ierc6551RegistryABI,
+    ...config,
+  } as UsePrepareContractWriteConfig<typeof ierc6551RegistryABI, TFunctionName>)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link ierc6551RegistryABI}__ and `functionName` set to `"createAccount"`.
+ */
+export function usePrepareIerc6551RegistryCreateAccount(
+  config: Omit<
+    UsePrepareContractWriteConfig<typeof ierc6551RegistryABI, 'createAccount'>,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return usePrepareContractWrite({
+    abi: ierc6551RegistryABI,
+    functionName: 'createAccount',
+    ...config,
+  } as UsePrepareContractWriteConfig<
+    typeof ierc6551RegistryABI,
+    'createAccount'
+  >)
+}
+
+/**
+ * Wraps __{@link useContractEvent}__ with `abi` set to __{@link ierc6551RegistryABI}__.
+ */
+export function useIerc6551RegistryEvent<TEventName extends string>(
+  config: Omit<
+    UseContractEventConfig<typeof ierc6551RegistryABI, TEventName>,
+    'abi'
+  > = {} as any,
+) {
+  return useContractEvent({
+    abi: ierc6551RegistryABI,
+    ...config,
+  } as UseContractEventConfig<typeof ierc6551RegistryABI, TEventName>)
+}
+
+/**
+ * Wraps __{@link useContractEvent}__ with `abi` set to __{@link ierc6551RegistryABI}__ and `eventName` set to `"ERC6551AccountCreated"`.
+ */
+export function useIerc6551RegistryErc6551AccountCreatedEvent(
+  config: Omit<
+    UseContractEventConfig<typeof ierc6551RegistryABI, 'ERC6551AccountCreated'>,
+    'abi' | 'eventName'
+  > = {} as any,
+) {
+  return useContractEvent({
+    abi: ierc6551RegistryABI,
+    eventName: 'ERC6551AccountCreated',
+    ...config,
+  } as UseContractEventConfig<
+    typeof ierc6551RegistryABI,
+    'ERC6551AccountCreated'
+  >)
+}
 
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountNftABI}__.
