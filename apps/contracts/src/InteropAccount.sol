@@ -2,41 +2,27 @@
 pragma solidity ^0.8.19;
 
 import {ERC6551Registry} from "erc6551/ERC6551Registry.sol";
-import {Ownable} from "openzeppelin-contracts/contracts/access/Ownable.sol";
 import {AccountProxy} from "tokenbound/AccountProxy.sol";
 
 import {IInteropAccount} from "./interfaces/IInteropAccount.sol";
 import {ERC6551AccountCreator} from "./extensions/ERC6551AccountCreator.sol";
-import {ERC721A} from "ERC721A/ERC721A.sol";
+import {ERC721Drop} from "./lib/ERC721Drop.sol";
 
 contract InteropAccountNFT is
     IInteropAccount,
-    ERC721A,
-    ERC6551AccountCreator,
-    Ownable
+    ERC721Drop,
+    ERC6551AccountCreator
 {
-    uint256 public immutable maxSupply;
-
-    uint256 public price;
-
     constructor(
         address registry,
         address accountProxy,
         address implementation,
         uint256 _maxSupply
     )
-        ERC721A("InteropNFTMain", "INFTM")
+        ERC721Drop("InteropNFTMain", "INFTM", 0, _maxSupply)
         ERC6551AccountCreator(registry, accountProxy, implementation)
     {
         maxSupply = _maxSupply;
-    }
-
-    /**
-     * @notice Modifier to check if the sale is active.
-     */
-    modifier whenSaleActive() {
-        require(price > 0, "Sale is not active");
-        _;
     }
 
     /**
@@ -63,44 +49,5 @@ contract InteropAccountNFT is
         emit CreateMainAccount(block.chainid, address(this), tokenId);
 
         _refundExcess(payable(msg.sender), price);
-    }
-
-    /**
-     * @notice Allows the owner to set the price of the NFT.
-     */
-    function setPrice(uint256 _price) public onlyOwner {
-        price = _price;
-    }
-
-    /**
-     * @notice Allows the owner to withdraw the contract's Ether balance.
-     */
-    function withdraw() external onlyOwner {
-        uint256 balance = address(this).balance;
-
-        require(balance > 0, "No funds to withdraw");
-
-        payable(owner()).transfer(balance);
-    }
-
-    /**
-     * @dev Refunds excess Ether sent with the transaction.
-     */
-    function _refundExcess(
-        address payable recipient,
-        uint256 requiredAmount
-    ) private {
-        uint256 excess = msg.value - requiredAmount;
-
-        if (excess > 0) {
-            recipient.transfer(excess);
-        }
-    }
-
-    /**
-     * @notice override the default implementation of _startTokenId
-     */
-    function _startTokenId() internal pure override returns (uint256) {
-        return 1;
     }
 }
