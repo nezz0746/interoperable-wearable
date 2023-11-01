@@ -1,5 +1,5 @@
 import { defineConfig } from "@wagmi/cli";
-import { foundry } from "@wagmi/cli/plugins";
+import { etherscan, foundry } from "@wagmi/cli/plugins";
 import { react } from "@wagmi/cli/plugins";
 import fs from "fs/promises";
 import { Address } from "wagmi";
@@ -37,7 +37,11 @@ export default defineConfig(async () => {
     out: "generated.ts",
     plugins: [
       foundry({
-        project: "../../apps/contracts",
+        artifacts: "../../apps/contracts/out/",
+        include: [
+          "InteropAccount.sol/*.json",
+          "InteropAccountRelay.sol/*.json",
+        ],
         deployments,
       }),
       react({

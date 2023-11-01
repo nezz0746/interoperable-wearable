@@ -1,13 +1,13 @@
 import {
-  useNetwork,
-  useChainId,
   useContractRead,
   UseContractReadConfig,
   useContractWrite,
-  Address,
   UseContractWriteConfig,
   usePrepareContractWrite,
   UsePrepareContractWriteConfig,
+  useContractEvent,
+  UseContractEventConfig,
+  Address,
 } from 'wagmi'
 import {
   ReadContractResult,
@@ -16,1087 +16,1544 @@ import {
 } from 'wagmi/actions'
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Counter
+// InteropAccountNFT
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/**
- * - [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x5e28e947EcC3684b6F385Dd1bB0C7Fa6f66F8619)
- * -
- */
-export const counterABI = [
+export const interopAccountNftABI = [
+  {
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+    inputs: [
+      { name: 'registry', internalType: 'address', type: 'address' },
+      { name: 'accountProxy', internalType: 'address', type: 'address' },
+      { name: 'implementation', internalType: 'address', type: 'address' },
+      { name: '_maxSupply', internalType: 'uint256', type: 'uint256' },
+    ],
+  },
+  { type: 'error', inputs: [], name: 'ApprovalCallerNotOwnerNorApproved' },
+  { type: 'error', inputs: [], name: 'ApprovalQueryForNonexistentToken' },
+  { type: 'error', inputs: [], name: 'BalanceQueryForZeroAddress' },
+  { type: 'error', inputs: [], name: 'MaxSupplyReached' },
+  { type: 'error', inputs: [], name: 'MintERC2309QuantityExceedsLimit' },
+  { type: 'error', inputs: [], name: 'MintToZeroAddress' },
+  { type: 'error', inputs: [], name: 'MintZeroQuantity' },
+  { type: 'error', inputs: [], name: 'OwnerQueryForNonexistentToken' },
+  { type: 'error', inputs: [], name: 'OwnershipNotInitializedForExtraData' },
+  { type: 'error', inputs: [], name: 'PriceNotMet' },
+  { type: 'error', inputs: [], name: 'TransferCallerNotOwnerNorApproved' },
+  { type: 'error', inputs: [], name: 'TransferFromIncorrectOwner' },
+  { type: 'error', inputs: [], name: 'TransferToNonERC721ReceiverImplementer' },
+  { type: 'error', inputs: [], name: 'TransferToZeroAddress' },
+  { type: 'error', inputs: [], name: 'URIQueryForNonexistentToken' },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'owner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'approved',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'tokenId',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+    ],
+    name: 'Approval',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'owner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'operator',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      { name: 'approved', internalType: 'bool', type: 'bool', indexed: false },
+    ],
+    name: 'ApprovalForAll',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'fromTokenId',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      {
+        name: 'toTokenId',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      { name: 'from', internalType: 'address', type: 'address', indexed: true },
+      { name: 'to', internalType: 'address', type: 'address', indexed: true },
+    ],
+    name: 'ConsecutiveTransfer',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'chainId',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      {
+        name: 'tokenContract',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'tokenId',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+    ],
+    name: 'CreateMainAccount',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'previousOwner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'newOwner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'OwnershipTransferred',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'from', internalType: 'address', type: 'address', indexed: true },
+      { name: 'to', internalType: 'address', type: 'address', indexed: true },
+      {
+        name: 'tokenId',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+    ],
+    name: 'Transfer',
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'to', internalType: 'address', type: 'address' },
+      { name: 'tokenId', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'approve',
+    outputs: [],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: 'owner', internalType: 'address', type: 'address' }],
+    name: 'balanceOf',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [{ name: 'recipient', internalType: 'address', type: 'address' }],
+    name: 'createMainAccount',
+    outputs: [],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: 'tokenId', internalType: 'uint256', type: 'uint256' }],
+    name: 'getApproved',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [
+      { name: 'owner', internalType: 'address', type: 'address' },
+      { name: 'operator', internalType: 'address', type: 'address' },
+    ],
+    name: 'isApprovedForAll',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+  },
   {
     stateMutability: 'view',
     type: 'function',
     inputs: [],
-    name: 'getNumber',
+    name: 'maxSupply',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'name',
+    outputs: [{ name: '', internalType: 'string', type: 'string' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'owner',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: 'tokenId', internalType: 'uint256', type: 'uint256' }],
+    name: 'ownerOf',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'price',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
   },
   {
     stateMutability: 'nonpayable',
     type: 'function',
     inputs: [],
-    name: 'increment',
+    name: 'renounceOwnership',
     outputs: [],
   },
   {
-    stateMutability: 'view',
+    stateMutability: 'payable',
     type: 'function',
-    inputs: [],
-    name: 'number',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    inputs: [
+      { name: 'from', internalType: 'address', type: 'address' },
+      { name: 'to', internalType: 'address', type: 'address' },
+      { name: 'tokenId', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'safeTransferFrom',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'from', internalType: 'address', type: 'address' },
+      { name: 'to', internalType: 'address', type: 'address' },
+      { name: 'tokenId', internalType: 'uint256', type: 'uint256' },
+      { name: '_data', internalType: 'bytes', type: 'bytes' },
+    ],
+    name: 'safeTransferFrom',
+    outputs: [],
   },
   {
     stateMutability: 'nonpayable',
     type: 'function',
-    inputs: [{ name: 'newNumber', internalType: 'uint256', type: 'uint256' }],
-    name: 'setNumber',
+    inputs: [
+      { name: 'operator', internalType: 'address', type: 'address' },
+      { name: 'approved', internalType: 'bool', type: 'bool' },
+    ],
+    name: 'setApprovalForAll',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: '_price', internalType: 'uint256', type: 'uint256' }],
+    name: 'setPrice',
+    outputs: [],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: 'interfaceId', internalType: 'bytes4', type: 'bytes4' }],
+    name: 'supportsInterface',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'symbol',
+    outputs: [{ name: '', internalType: 'string', type: 'string' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: 'tokenId', internalType: 'uint256', type: 'uint256' }],
+    name: 'tokenURI',
+    outputs: [{ name: '', internalType: 'string', type: 'string' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'totalSupply',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'from', internalType: 'address', type: 'address' },
+      { name: 'to', internalType: 'address', type: 'address' },
+      { name: 'tokenId', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'transferFrom',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: 'newOwner', internalType: 'address', type: 'address' }],
+    name: 'transferOwnership',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [],
+    name: 'withdraw',
+    outputs: [],
+  },
+] as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// InteropAccountRelay
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x107c7789dea397EFBCA24ccAfF41698baFd82A72)
+ */
+export const interopAccountRelayABI = [
+  {
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+    inputs: [
+      { name: 'registry', internalType: 'address', type: 'address' },
+      { name: 'accountProxy', internalType: 'address', type: 'address' },
+      { name: 'implementation', internalType: 'address', type: 'address' },
+    ],
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'account',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+    ],
+    name: 'CreateSideAccount',
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: 'chainId', internalType: 'uint256', type: 'uint256' },
+      { name: 'mainContract', internalType: 'address', type: 'address' },
+      { name: 'tokenId', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'createAccount',
     outputs: [],
   },
 ] as const
 
 /**
- * - [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x5e28e947EcC3684b6F385Dd1bB0C7Fa6f66F8619)
- * -
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x107c7789dea397EFBCA24ccAfF41698baFd82A72)
  */
-export const counterAddress = {
-  5: '0x5e28e947EcC3684b6F385Dd1bB0C7Fa6f66F8619',
-  1337: '0x948B3c65b89DF0B4894ABE91E6D02FE579834F8F',
+export const interopAccountRelayAddress = {
+  80001: '0x107c7789dea397EFBCA24ccAfF41698baFd82A72',
 } as const
 
 /**
- * - [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x5e28e947EcC3684b6F385Dd1bB0C7Fa6f66F8619)
- * -
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x107c7789dea397EFBCA24ccAfF41698baFd82A72)
  */
-export const counterConfig = {
-  address: counterAddress,
-  abi: counterABI,
+export const interopAccountRelayConfig = {
+  address: interopAccountRelayAddress,
+  abi: interopAccountRelayABI,
 } as const
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// IMulticall3
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-export const iMulticall3ABI = [
-  {
-    stateMutability: 'payable',
-    type: 'function',
-    inputs: [
-      {
-        name: 'calls',
-        internalType: 'struct IMulticall3.Call[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'target', internalType: 'address', type: 'address' },
-          { name: 'callData', internalType: 'bytes', type: 'bytes' },
-        ],
-      },
-    ],
-    name: 'aggregate',
-    outputs: [
-      { name: 'blockNumber', internalType: 'uint256', type: 'uint256' },
-      { name: 'returnData', internalType: 'bytes[]', type: 'bytes[]' },
-    ],
-  },
-  {
-    stateMutability: 'payable',
-    type: 'function',
-    inputs: [
-      {
-        name: 'calls',
-        internalType: 'struct IMulticall3.Call3[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'target', internalType: 'address', type: 'address' },
-          { name: 'allowFailure', internalType: 'bool', type: 'bool' },
-          { name: 'callData', internalType: 'bytes', type: 'bytes' },
-        ],
-      },
-    ],
-    name: 'aggregate3',
-    outputs: [
-      {
-        name: 'returnData',
-        internalType: 'struct IMulticall3.Result[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'success', internalType: 'bool', type: 'bool' },
-          { name: 'returnData', internalType: 'bytes', type: 'bytes' },
-        ],
-      },
-    ],
-  },
-  {
-    stateMutability: 'payable',
-    type: 'function',
-    inputs: [
-      {
-        name: 'calls',
-        internalType: 'struct IMulticall3.Call3Value[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'target', internalType: 'address', type: 'address' },
-          { name: 'allowFailure', internalType: 'bool', type: 'bool' },
-          { name: 'value', internalType: 'uint256', type: 'uint256' },
-          { name: 'callData', internalType: 'bytes', type: 'bytes' },
-        ],
-      },
-    ],
-    name: 'aggregate3Value',
-    outputs: [
-      {
-        name: 'returnData',
-        internalType: 'struct IMulticall3.Result[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'success', internalType: 'bool', type: 'bool' },
-          { name: 'returnData', internalType: 'bytes', type: 'bytes' },
-        ],
-      },
-    ],
-  },
-  {
-    stateMutability: 'payable',
-    type: 'function',
-    inputs: [
-      {
-        name: 'calls',
-        internalType: 'struct IMulticall3.Call[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'target', internalType: 'address', type: 'address' },
-          { name: 'callData', internalType: 'bytes', type: 'bytes' },
-        ],
-      },
-    ],
-    name: 'blockAndAggregate',
-    outputs: [
-      { name: 'blockNumber', internalType: 'uint256', type: 'uint256' },
-      { name: 'blockHash', internalType: 'bytes32', type: 'bytes32' },
-      {
-        name: 'returnData',
-        internalType: 'struct IMulticall3.Result[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'success', internalType: 'bool', type: 'bool' },
-          { name: 'returnData', internalType: 'bytes', type: 'bytes' },
-        ],
-      },
-    ],
-  },
-  {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [],
-    name: 'getBasefee',
-    outputs: [{ name: 'basefee', internalType: 'uint256', type: 'uint256' }],
-  },
-  {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [{ name: 'blockNumber', internalType: 'uint256', type: 'uint256' }],
-    name: 'getBlockHash',
-    outputs: [{ name: 'blockHash', internalType: 'bytes32', type: 'bytes32' }],
-  },
-  {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [],
-    name: 'getBlockNumber',
-    outputs: [
-      { name: 'blockNumber', internalType: 'uint256', type: 'uint256' },
-    ],
-  },
-  {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [],
-    name: 'getChainId',
-    outputs: [{ name: 'chainid', internalType: 'uint256', type: 'uint256' }],
-  },
-  {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [],
-    name: 'getCurrentBlockCoinbase',
-    outputs: [{ name: 'coinbase', internalType: 'address', type: 'address' }],
-  },
-  {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [],
-    name: 'getCurrentBlockDifficulty',
-    outputs: [{ name: 'difficulty', internalType: 'uint256', type: 'uint256' }],
-  },
-  {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [],
-    name: 'getCurrentBlockGasLimit',
-    outputs: [{ name: 'gaslimit', internalType: 'uint256', type: 'uint256' }],
-  },
-  {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [],
-    name: 'getCurrentBlockTimestamp',
-    outputs: [{ name: 'timestamp', internalType: 'uint256', type: 'uint256' }],
-  },
-  {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [{ name: 'addr', internalType: 'address', type: 'address' }],
-    name: 'getEthBalance',
-    outputs: [{ name: 'balance', internalType: 'uint256', type: 'uint256' }],
-  },
-  {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [],
-    name: 'getLastBlockHash',
-    outputs: [{ name: 'blockHash', internalType: 'bytes32', type: 'bytes32' }],
-  },
-  {
-    stateMutability: 'payable',
-    type: 'function',
-    inputs: [
-      { name: 'requireSuccess', internalType: 'bool', type: 'bool' },
-      {
-        name: 'calls',
-        internalType: 'struct IMulticall3.Call[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'target', internalType: 'address', type: 'address' },
-          { name: 'callData', internalType: 'bytes', type: 'bytes' },
-        ],
-      },
-    ],
-    name: 'tryAggregate',
-    outputs: [
-      {
-        name: 'returnData',
-        internalType: 'struct IMulticall3.Result[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'success', internalType: 'bool', type: 'bool' },
-          { name: 'returnData', internalType: 'bytes', type: 'bytes' },
-        ],
-      },
-    ],
-  },
-  {
-    stateMutability: 'payable',
-    type: 'function',
-    inputs: [
-      { name: 'requireSuccess', internalType: 'bool', type: 'bool' },
-      {
-        name: 'calls',
-        internalType: 'struct IMulticall3.Call[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'target', internalType: 'address', type: 'address' },
-          { name: 'callData', internalType: 'bytes', type: 'bytes' },
-        ],
-      },
-    ],
-    name: 'tryBlockAndAggregate',
-    outputs: [
-      { name: 'blockNumber', internalType: 'uint256', type: 'uint256' },
-      { name: 'blockHash', internalType: 'bytes32', type: 'bytes32' },
-      {
-        name: 'returnData',
-        internalType: 'struct IMulticall3.Result[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'success', internalType: 'bool', type: 'bool' },
-          { name: 'returnData', internalType: 'bytes', type: 'bytes' },
-        ],
-      },
-    ],
-  },
-] as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // React
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link counterABI}__.
- *
- * - [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x5e28e947EcC3684b6F385Dd1bB0C7Fa6f66F8619)
- * -
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountNftABI}__.
  */
-export function useCounterRead<
+export function useInteropAccountNftRead<
   TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof counterABI, TFunctionName>,
+  TSelectData = ReadContractResult<typeof interopAccountNftABI, TFunctionName>,
 >(
   config: Omit<
-    UseContractReadConfig<typeof counterABI, TFunctionName, TSelectData>,
-    'abi' | 'address'
-  > & { chainId?: keyof typeof counterAddress } = {} as any,
-) {
-  const { chain } = useNetwork()
-  const defaultChainId = useChainId()
-  const chainId = config.chainId ?? chain?.id ?? defaultChainId
-  return useContractRead({
-    abi: counterABI,
-    address: counterAddress[chainId as keyof typeof counterAddress],
-    ...config,
-  } as UseContractReadConfig<typeof counterABI, TFunctionName, TSelectData>)
-}
-
-/**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link counterABI}__ and `functionName` set to `"getNumber"`.
- *
- * - [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x5e28e947EcC3684b6F385Dd1bB0C7Fa6f66F8619)
- * -
- */
-export function useCounterGetNumber<
-  TFunctionName extends 'getNumber',
-  TSelectData = ReadContractResult<typeof counterABI, TFunctionName>,
->(
-  config: Omit<
-    UseContractReadConfig<typeof counterABI, TFunctionName, TSelectData>,
-    'abi' | 'address' | 'functionName'
-  > & { chainId?: keyof typeof counterAddress } = {} as any,
-) {
-  const { chain } = useNetwork()
-  const defaultChainId = useChainId()
-  const chainId = config.chainId ?? chain?.id ?? defaultChainId
-  return useContractRead({
-    abi: counterABI,
-    address: counterAddress[chainId as keyof typeof counterAddress],
-    functionName: 'getNumber',
-    ...config,
-  } as UseContractReadConfig<typeof counterABI, TFunctionName, TSelectData>)
-}
-
-/**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link counterABI}__ and `functionName` set to `"number"`.
- *
- * - [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x5e28e947EcC3684b6F385Dd1bB0C7Fa6f66F8619)
- * -
- */
-export function useCounterNumber<
-  TFunctionName extends 'number',
-  TSelectData = ReadContractResult<typeof counterABI, TFunctionName>,
->(
-  config: Omit<
-    UseContractReadConfig<typeof counterABI, TFunctionName, TSelectData>,
-    'abi' | 'address' | 'functionName'
-  > & { chainId?: keyof typeof counterAddress } = {} as any,
-) {
-  const { chain } = useNetwork()
-  const defaultChainId = useChainId()
-  const chainId = config.chainId ?? chain?.id ?? defaultChainId
-  return useContractRead({
-    abi: counterABI,
-    address: counterAddress[chainId as keyof typeof counterAddress],
-    functionName: 'number',
-    ...config,
-  } as UseContractReadConfig<typeof counterABI, TFunctionName, TSelectData>)
-}
-
-/**
- * Wraps __{@link useContractWrite}__ with `abi` set to __{@link counterABI}__.
- *
- * - [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x5e28e947EcC3684b6F385Dd1bB0C7Fa6f66F8619)
- * -
- */
-export function useCounterWrite<
-  TFunctionName extends string,
-  TMode extends WriteContractMode = undefined,
-  TChainId extends number = keyof typeof counterAddress,
->(
-  config: TMode extends 'prepared'
-    ? UseContractWriteConfig<
-        PrepareWriteContractResult<typeof counterABI, string>['request']['abi'],
-        TFunctionName,
-        TMode
-      > & { address?: Address; chainId?: TChainId }
-    : UseContractWriteConfig<typeof counterABI, TFunctionName, TMode> & {
-        abi?: never
-        address?: never
-        chainId?: TChainId
-      } = {} as any,
-) {
-  const { chain } = useNetwork()
-  const defaultChainId = useChainId()
-  const chainId = config.chainId ?? chain?.id ?? defaultChainId
-  return useContractWrite<typeof counterABI, TFunctionName, TMode>({
-    abi: counterABI,
-    address: counterAddress[chainId as keyof typeof counterAddress],
-    ...config,
-  } as any)
-}
-
-/**
- * Wraps __{@link useContractWrite}__ with `abi` set to __{@link counterABI}__ and `functionName` set to `"increment"`.
- *
- * - [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x5e28e947EcC3684b6F385Dd1bB0C7Fa6f66F8619)
- * -
- */
-export function useCounterIncrement<
-  TMode extends WriteContractMode = undefined,
-  TChainId extends number = keyof typeof counterAddress,
->(
-  config: TMode extends 'prepared'
-    ? UseContractWriteConfig<
-        PrepareWriteContractResult<
-          typeof counterABI,
-          'increment'
-        >['request']['abi'],
-        'increment',
-        TMode
-      > & { address?: Address; chainId?: TChainId; functionName?: 'increment' }
-    : UseContractWriteConfig<typeof counterABI, 'increment', TMode> & {
-        abi?: never
-        address?: never
-        chainId?: TChainId
-        functionName?: 'increment'
-      } = {} as any,
-) {
-  const { chain } = useNetwork()
-  const defaultChainId = useChainId()
-  const chainId = config.chainId ?? chain?.id ?? defaultChainId
-  return useContractWrite<typeof counterABI, 'increment', TMode>({
-    abi: counterABI,
-    address: counterAddress[chainId as keyof typeof counterAddress],
-    functionName: 'increment',
-    ...config,
-  } as any)
-}
-
-/**
- * Wraps __{@link useContractWrite}__ with `abi` set to __{@link counterABI}__ and `functionName` set to `"setNumber"`.
- *
- * - [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x5e28e947EcC3684b6F385Dd1bB0C7Fa6f66F8619)
- * -
- */
-export function useCounterSetNumber<
-  TMode extends WriteContractMode = undefined,
-  TChainId extends number = keyof typeof counterAddress,
->(
-  config: TMode extends 'prepared'
-    ? UseContractWriteConfig<
-        PrepareWriteContractResult<
-          typeof counterABI,
-          'setNumber'
-        >['request']['abi'],
-        'setNumber',
-        TMode
-      > & { address?: Address; chainId?: TChainId; functionName?: 'setNumber' }
-    : UseContractWriteConfig<typeof counterABI, 'setNumber', TMode> & {
-        abi?: never
-        address?: never
-        chainId?: TChainId
-        functionName?: 'setNumber'
-      } = {} as any,
-) {
-  const { chain } = useNetwork()
-  const defaultChainId = useChainId()
-  const chainId = config.chainId ?? chain?.id ?? defaultChainId
-  return useContractWrite<typeof counterABI, 'setNumber', TMode>({
-    abi: counterABI,
-    address: counterAddress[chainId as keyof typeof counterAddress],
-    functionName: 'setNumber',
-    ...config,
-  } as any)
-}
-
-/**
- * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link counterABI}__.
- *
- * - [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x5e28e947EcC3684b6F385Dd1bB0C7Fa6f66F8619)
- * -
- */
-export function usePrepareCounterWrite<TFunctionName extends string>(
-  config: Omit<
-    UsePrepareContractWriteConfig<typeof counterABI, TFunctionName>,
-    'abi' | 'address'
-  > & { chainId?: keyof typeof counterAddress } = {} as any,
-) {
-  const { chain } = useNetwork()
-  const defaultChainId = useChainId()
-  const chainId = config.chainId ?? chain?.id ?? defaultChainId
-  return usePrepareContractWrite({
-    abi: counterABI,
-    address: counterAddress[chainId as keyof typeof counterAddress],
-    ...config,
-  } as UsePrepareContractWriteConfig<typeof counterABI, TFunctionName>)
-}
-
-/**
- * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link counterABI}__ and `functionName` set to `"increment"`.
- *
- * - [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x5e28e947EcC3684b6F385Dd1bB0C7Fa6f66F8619)
- * -
- */
-export function usePrepareCounterIncrement(
-  config: Omit<
-    UsePrepareContractWriteConfig<typeof counterABI, 'increment'>,
-    'abi' | 'address' | 'functionName'
-  > & { chainId?: keyof typeof counterAddress } = {} as any,
-) {
-  const { chain } = useNetwork()
-  const defaultChainId = useChainId()
-  const chainId = config.chainId ?? chain?.id ?? defaultChainId
-  return usePrepareContractWrite({
-    abi: counterABI,
-    address: counterAddress[chainId as keyof typeof counterAddress],
-    functionName: 'increment',
-    ...config,
-  } as UsePrepareContractWriteConfig<typeof counterABI, 'increment'>)
-}
-
-/**
- * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link counterABI}__ and `functionName` set to `"setNumber"`.
- *
- * - [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x5e28e947EcC3684b6F385Dd1bB0C7Fa6f66F8619)
- * -
- */
-export function usePrepareCounterSetNumber(
-  config: Omit<
-    UsePrepareContractWriteConfig<typeof counterABI, 'setNumber'>,
-    'abi' | 'address' | 'functionName'
-  > & { chainId?: keyof typeof counterAddress } = {} as any,
-) {
-  const { chain } = useNetwork()
-  const defaultChainId = useChainId()
-  const chainId = config.chainId ?? chain?.id ?? defaultChainId
-  return usePrepareContractWrite({
-    abi: counterABI,
-    address: counterAddress[chainId as keyof typeof counterAddress],
-    functionName: 'setNumber',
-    ...config,
-  } as UsePrepareContractWriteConfig<typeof counterABI, 'setNumber'>)
-}
-
-/**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link iMulticall3ABI}__.
- */
-export function useIMulticall3Read<
-  TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof iMulticall3ABI, TFunctionName>,
->(
-  config: Omit<
-    UseContractReadConfig<typeof iMulticall3ABI, TFunctionName, TSelectData>,
+    UseContractReadConfig<
+      typeof interopAccountNftABI,
+      TFunctionName,
+      TSelectData
+    >,
     'abi'
   > = {} as any,
 ) {
   return useContractRead({
-    abi: iMulticall3ABI,
+    abi: interopAccountNftABI,
     ...config,
-  } as UseContractReadConfig<typeof iMulticall3ABI, TFunctionName, TSelectData>)
+  } as UseContractReadConfig<
+    typeof interopAccountNftABI,
+    TFunctionName,
+    TSelectData
+  >)
 }
 
 /**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link iMulticall3ABI}__ and `functionName` set to `"getBasefee"`.
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"balanceOf"`.
  */
-export function useIMulticall3GetBasefee<
-  TFunctionName extends 'getBasefee',
-  TSelectData = ReadContractResult<typeof iMulticall3ABI, TFunctionName>,
+export function useInteropAccountNftBalanceOf<
+  TFunctionName extends 'balanceOf',
+  TSelectData = ReadContractResult<typeof interopAccountNftABI, TFunctionName>,
 >(
   config: Omit<
-    UseContractReadConfig<typeof iMulticall3ABI, TFunctionName, TSelectData>,
+    UseContractReadConfig<
+      typeof interopAccountNftABI,
+      TFunctionName,
+      TSelectData
+    >,
     'abi' | 'functionName'
   > = {} as any,
 ) {
   return useContractRead({
-    abi: iMulticall3ABI,
-    functionName: 'getBasefee',
+    abi: interopAccountNftABI,
+    functionName: 'balanceOf',
     ...config,
-  } as UseContractReadConfig<typeof iMulticall3ABI, TFunctionName, TSelectData>)
+  } as UseContractReadConfig<
+    typeof interopAccountNftABI,
+    TFunctionName,
+    TSelectData
+  >)
 }
 
 /**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link iMulticall3ABI}__ and `functionName` set to `"getBlockHash"`.
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"getApproved"`.
  */
-export function useIMulticall3GetBlockHash<
-  TFunctionName extends 'getBlockHash',
-  TSelectData = ReadContractResult<typeof iMulticall3ABI, TFunctionName>,
+export function useInteropAccountNftGetApproved<
+  TFunctionName extends 'getApproved',
+  TSelectData = ReadContractResult<typeof interopAccountNftABI, TFunctionName>,
 >(
   config: Omit<
-    UseContractReadConfig<typeof iMulticall3ABI, TFunctionName, TSelectData>,
+    UseContractReadConfig<
+      typeof interopAccountNftABI,
+      TFunctionName,
+      TSelectData
+    >,
     'abi' | 'functionName'
   > = {} as any,
 ) {
   return useContractRead({
-    abi: iMulticall3ABI,
-    functionName: 'getBlockHash',
+    abi: interopAccountNftABI,
+    functionName: 'getApproved',
     ...config,
-  } as UseContractReadConfig<typeof iMulticall3ABI, TFunctionName, TSelectData>)
+  } as UseContractReadConfig<
+    typeof interopAccountNftABI,
+    TFunctionName,
+    TSelectData
+  >)
 }
 
 /**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link iMulticall3ABI}__ and `functionName` set to `"getBlockNumber"`.
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"isApprovedForAll"`.
  */
-export function useIMulticall3GetBlockNumber<
-  TFunctionName extends 'getBlockNumber',
-  TSelectData = ReadContractResult<typeof iMulticall3ABI, TFunctionName>,
+export function useInteropAccountNftIsApprovedForAll<
+  TFunctionName extends 'isApprovedForAll',
+  TSelectData = ReadContractResult<typeof interopAccountNftABI, TFunctionName>,
 >(
   config: Omit<
-    UseContractReadConfig<typeof iMulticall3ABI, TFunctionName, TSelectData>,
+    UseContractReadConfig<
+      typeof interopAccountNftABI,
+      TFunctionName,
+      TSelectData
+    >,
     'abi' | 'functionName'
   > = {} as any,
 ) {
   return useContractRead({
-    abi: iMulticall3ABI,
-    functionName: 'getBlockNumber',
+    abi: interopAccountNftABI,
+    functionName: 'isApprovedForAll',
     ...config,
-  } as UseContractReadConfig<typeof iMulticall3ABI, TFunctionName, TSelectData>)
+  } as UseContractReadConfig<
+    typeof interopAccountNftABI,
+    TFunctionName,
+    TSelectData
+  >)
 }
 
 /**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link iMulticall3ABI}__ and `functionName` set to `"getChainId"`.
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"maxSupply"`.
  */
-export function useIMulticall3GetChainId<
-  TFunctionName extends 'getChainId',
-  TSelectData = ReadContractResult<typeof iMulticall3ABI, TFunctionName>,
+export function useInteropAccountNftMaxSupply<
+  TFunctionName extends 'maxSupply',
+  TSelectData = ReadContractResult<typeof interopAccountNftABI, TFunctionName>,
 >(
   config: Omit<
-    UseContractReadConfig<typeof iMulticall3ABI, TFunctionName, TSelectData>,
+    UseContractReadConfig<
+      typeof interopAccountNftABI,
+      TFunctionName,
+      TSelectData
+    >,
     'abi' | 'functionName'
   > = {} as any,
 ) {
   return useContractRead({
-    abi: iMulticall3ABI,
-    functionName: 'getChainId',
+    abi: interopAccountNftABI,
+    functionName: 'maxSupply',
     ...config,
-  } as UseContractReadConfig<typeof iMulticall3ABI, TFunctionName, TSelectData>)
+  } as UseContractReadConfig<
+    typeof interopAccountNftABI,
+    TFunctionName,
+    TSelectData
+  >)
 }
 
 /**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link iMulticall3ABI}__ and `functionName` set to `"getCurrentBlockCoinbase"`.
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"name"`.
  */
-export function useIMulticall3GetCurrentBlockCoinbase<
-  TFunctionName extends 'getCurrentBlockCoinbase',
-  TSelectData = ReadContractResult<typeof iMulticall3ABI, TFunctionName>,
+export function useInteropAccountNftName<
+  TFunctionName extends 'name',
+  TSelectData = ReadContractResult<typeof interopAccountNftABI, TFunctionName>,
 >(
   config: Omit<
-    UseContractReadConfig<typeof iMulticall3ABI, TFunctionName, TSelectData>,
+    UseContractReadConfig<
+      typeof interopAccountNftABI,
+      TFunctionName,
+      TSelectData
+    >,
     'abi' | 'functionName'
   > = {} as any,
 ) {
   return useContractRead({
-    abi: iMulticall3ABI,
-    functionName: 'getCurrentBlockCoinbase',
+    abi: interopAccountNftABI,
+    functionName: 'name',
     ...config,
-  } as UseContractReadConfig<typeof iMulticall3ABI, TFunctionName, TSelectData>)
+  } as UseContractReadConfig<
+    typeof interopAccountNftABI,
+    TFunctionName,
+    TSelectData
+  >)
 }
 
 /**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link iMulticall3ABI}__ and `functionName` set to `"getCurrentBlockDifficulty"`.
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"owner"`.
  */
-export function useIMulticall3GetCurrentBlockDifficulty<
-  TFunctionName extends 'getCurrentBlockDifficulty',
-  TSelectData = ReadContractResult<typeof iMulticall3ABI, TFunctionName>,
+export function useInteropAccountNftOwner<
+  TFunctionName extends 'owner',
+  TSelectData = ReadContractResult<typeof interopAccountNftABI, TFunctionName>,
 >(
   config: Omit<
-    UseContractReadConfig<typeof iMulticall3ABI, TFunctionName, TSelectData>,
+    UseContractReadConfig<
+      typeof interopAccountNftABI,
+      TFunctionName,
+      TSelectData
+    >,
     'abi' | 'functionName'
   > = {} as any,
 ) {
   return useContractRead({
-    abi: iMulticall3ABI,
-    functionName: 'getCurrentBlockDifficulty',
+    abi: interopAccountNftABI,
+    functionName: 'owner',
     ...config,
-  } as UseContractReadConfig<typeof iMulticall3ABI, TFunctionName, TSelectData>)
+  } as UseContractReadConfig<
+    typeof interopAccountNftABI,
+    TFunctionName,
+    TSelectData
+  >)
 }
 
 /**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link iMulticall3ABI}__ and `functionName` set to `"getCurrentBlockGasLimit"`.
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"ownerOf"`.
  */
-export function useIMulticall3GetCurrentBlockGasLimit<
-  TFunctionName extends 'getCurrentBlockGasLimit',
-  TSelectData = ReadContractResult<typeof iMulticall3ABI, TFunctionName>,
+export function useInteropAccountNftOwnerOf<
+  TFunctionName extends 'ownerOf',
+  TSelectData = ReadContractResult<typeof interopAccountNftABI, TFunctionName>,
 >(
   config: Omit<
-    UseContractReadConfig<typeof iMulticall3ABI, TFunctionName, TSelectData>,
+    UseContractReadConfig<
+      typeof interopAccountNftABI,
+      TFunctionName,
+      TSelectData
+    >,
     'abi' | 'functionName'
   > = {} as any,
 ) {
   return useContractRead({
-    abi: iMulticall3ABI,
-    functionName: 'getCurrentBlockGasLimit',
+    abi: interopAccountNftABI,
+    functionName: 'ownerOf',
     ...config,
-  } as UseContractReadConfig<typeof iMulticall3ABI, TFunctionName, TSelectData>)
+  } as UseContractReadConfig<
+    typeof interopAccountNftABI,
+    TFunctionName,
+    TSelectData
+  >)
 }
 
 /**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link iMulticall3ABI}__ and `functionName` set to `"getCurrentBlockTimestamp"`.
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"price"`.
  */
-export function useIMulticall3GetCurrentBlockTimestamp<
-  TFunctionName extends 'getCurrentBlockTimestamp',
-  TSelectData = ReadContractResult<typeof iMulticall3ABI, TFunctionName>,
+export function useInteropAccountNftPrice<
+  TFunctionName extends 'price',
+  TSelectData = ReadContractResult<typeof interopAccountNftABI, TFunctionName>,
 >(
   config: Omit<
-    UseContractReadConfig<typeof iMulticall3ABI, TFunctionName, TSelectData>,
+    UseContractReadConfig<
+      typeof interopAccountNftABI,
+      TFunctionName,
+      TSelectData
+    >,
     'abi' | 'functionName'
   > = {} as any,
 ) {
   return useContractRead({
-    abi: iMulticall3ABI,
-    functionName: 'getCurrentBlockTimestamp',
+    abi: interopAccountNftABI,
+    functionName: 'price',
     ...config,
-  } as UseContractReadConfig<typeof iMulticall3ABI, TFunctionName, TSelectData>)
+  } as UseContractReadConfig<
+    typeof interopAccountNftABI,
+    TFunctionName,
+    TSelectData
+  >)
 }
 
 /**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link iMulticall3ABI}__ and `functionName` set to `"getEthBalance"`.
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"supportsInterface"`.
  */
-export function useIMulticall3GetEthBalance<
-  TFunctionName extends 'getEthBalance',
-  TSelectData = ReadContractResult<typeof iMulticall3ABI, TFunctionName>,
+export function useInteropAccountNftSupportsInterface<
+  TFunctionName extends 'supportsInterface',
+  TSelectData = ReadContractResult<typeof interopAccountNftABI, TFunctionName>,
 >(
   config: Omit<
-    UseContractReadConfig<typeof iMulticall3ABI, TFunctionName, TSelectData>,
+    UseContractReadConfig<
+      typeof interopAccountNftABI,
+      TFunctionName,
+      TSelectData
+    >,
     'abi' | 'functionName'
   > = {} as any,
 ) {
   return useContractRead({
-    abi: iMulticall3ABI,
-    functionName: 'getEthBalance',
+    abi: interopAccountNftABI,
+    functionName: 'supportsInterface',
     ...config,
-  } as UseContractReadConfig<typeof iMulticall3ABI, TFunctionName, TSelectData>)
+  } as UseContractReadConfig<
+    typeof interopAccountNftABI,
+    TFunctionName,
+    TSelectData
+  >)
 }
 
 /**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link iMulticall3ABI}__ and `functionName` set to `"getLastBlockHash"`.
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"symbol"`.
  */
-export function useIMulticall3GetLastBlockHash<
-  TFunctionName extends 'getLastBlockHash',
-  TSelectData = ReadContractResult<typeof iMulticall3ABI, TFunctionName>,
+export function useInteropAccountNftSymbol<
+  TFunctionName extends 'symbol',
+  TSelectData = ReadContractResult<typeof interopAccountNftABI, TFunctionName>,
 >(
   config: Omit<
-    UseContractReadConfig<typeof iMulticall3ABI, TFunctionName, TSelectData>,
+    UseContractReadConfig<
+      typeof interopAccountNftABI,
+      TFunctionName,
+      TSelectData
+    >,
     'abi' | 'functionName'
   > = {} as any,
 ) {
   return useContractRead({
-    abi: iMulticall3ABI,
-    functionName: 'getLastBlockHash',
+    abi: interopAccountNftABI,
+    functionName: 'symbol',
     ...config,
-  } as UseContractReadConfig<typeof iMulticall3ABI, TFunctionName, TSelectData>)
+  } as UseContractReadConfig<
+    typeof interopAccountNftABI,
+    TFunctionName,
+    TSelectData
+  >)
 }
 
 /**
- * Wraps __{@link useContractWrite}__ with `abi` set to __{@link iMulticall3ABI}__.
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"tokenURI"`.
  */
-export function useIMulticall3Write<
+export function useInteropAccountNftTokenUri<
+  TFunctionName extends 'tokenURI',
+  TSelectData = ReadContractResult<typeof interopAccountNftABI, TFunctionName>,
+>(
+  config: Omit<
+    UseContractReadConfig<
+      typeof interopAccountNftABI,
+      TFunctionName,
+      TSelectData
+    >,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return useContractRead({
+    abi: interopAccountNftABI,
+    functionName: 'tokenURI',
+    ...config,
+  } as UseContractReadConfig<
+    typeof interopAccountNftABI,
+    TFunctionName,
+    TSelectData
+  >)
+}
+
+/**
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"totalSupply"`.
+ */
+export function useInteropAccountNftTotalSupply<
+  TFunctionName extends 'totalSupply',
+  TSelectData = ReadContractResult<typeof interopAccountNftABI, TFunctionName>,
+>(
+  config: Omit<
+    UseContractReadConfig<
+      typeof interopAccountNftABI,
+      TFunctionName,
+      TSelectData
+    >,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return useContractRead({
+    abi: interopAccountNftABI,
+    functionName: 'totalSupply',
+    ...config,
+  } as UseContractReadConfig<
+    typeof interopAccountNftABI,
+    TFunctionName,
+    TSelectData
+  >)
+}
+
+/**
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountNftABI}__.
+ */
+export function useInteropAccountNftWrite<
   TFunctionName extends string,
   TMode extends WriteContractMode = undefined,
 >(
   config: TMode extends 'prepared'
     ? UseContractWriteConfig<
         PrepareWriteContractResult<
-          typeof iMulticall3ABI,
+          typeof interopAccountNftABI,
           string
         >['request']['abi'],
         TFunctionName,
         TMode
       >
-    : UseContractWriteConfig<typeof iMulticall3ABI, TFunctionName, TMode> & {
-        abi?: never
-      } = {} as any,
-) {
-  return useContractWrite<typeof iMulticall3ABI, TFunctionName, TMode>({
-    abi: iMulticall3ABI,
-    ...config,
-  } as any)
-}
-
-/**
- * Wraps __{@link useContractWrite}__ with `abi` set to __{@link iMulticall3ABI}__ and `functionName` set to `"aggregate"`.
- */
-export function useIMulticall3Aggregate<
-  TMode extends WriteContractMode = undefined,
->(
-  config: TMode extends 'prepared'
-    ? UseContractWriteConfig<
-        PrepareWriteContractResult<
-          typeof iMulticall3ABI,
-          'aggregate'
-        >['request']['abi'],
-        'aggregate',
-        TMode
-      > & { functionName?: 'aggregate' }
-    : UseContractWriteConfig<typeof iMulticall3ABI, 'aggregate', TMode> & {
-        abi?: never
-        functionName?: 'aggregate'
-      } = {} as any,
-) {
-  return useContractWrite<typeof iMulticall3ABI, 'aggregate', TMode>({
-    abi: iMulticall3ABI,
-    functionName: 'aggregate',
-    ...config,
-  } as any)
-}
-
-/**
- * Wraps __{@link useContractWrite}__ with `abi` set to __{@link iMulticall3ABI}__ and `functionName` set to `"aggregate3"`.
- */
-export function useIMulticall3Aggregate3<
-  TMode extends WriteContractMode = undefined,
->(
-  config: TMode extends 'prepared'
-    ? UseContractWriteConfig<
-        PrepareWriteContractResult<
-          typeof iMulticall3ABI,
-          'aggregate3'
-        >['request']['abi'],
-        'aggregate3',
-        TMode
-      > & { functionName?: 'aggregate3' }
-    : UseContractWriteConfig<typeof iMulticall3ABI, 'aggregate3', TMode> & {
-        abi?: never
-        functionName?: 'aggregate3'
-      } = {} as any,
-) {
-  return useContractWrite<typeof iMulticall3ABI, 'aggregate3', TMode>({
-    abi: iMulticall3ABI,
-    functionName: 'aggregate3',
-    ...config,
-  } as any)
-}
-
-/**
- * Wraps __{@link useContractWrite}__ with `abi` set to __{@link iMulticall3ABI}__ and `functionName` set to `"aggregate3Value"`.
- */
-export function useIMulticall3Aggregate3Value<
-  TMode extends WriteContractMode = undefined,
->(
-  config: TMode extends 'prepared'
-    ? UseContractWriteConfig<
-        PrepareWriteContractResult<
-          typeof iMulticall3ABI,
-          'aggregate3Value'
-        >['request']['abi'],
-        'aggregate3Value',
-        TMode
-      > & { functionName?: 'aggregate3Value' }
     : UseContractWriteConfig<
-        typeof iMulticall3ABI,
-        'aggregate3Value',
+        typeof interopAccountNftABI,
+        TFunctionName,
         TMode
       > & {
         abi?: never
-        functionName?: 'aggregate3Value'
       } = {} as any,
 ) {
-  return useContractWrite<typeof iMulticall3ABI, 'aggregate3Value', TMode>({
-    abi: iMulticall3ABI,
-    functionName: 'aggregate3Value',
+  return useContractWrite<typeof interopAccountNftABI, TFunctionName, TMode>({
+    abi: interopAccountNftABI,
     ...config,
   } as any)
 }
 
 /**
- * Wraps __{@link useContractWrite}__ with `abi` set to __{@link iMulticall3ABI}__ and `functionName` set to `"blockAndAggregate"`.
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"approve"`.
  */
-export function useIMulticall3BlockAndAggregate<
+export function useInteropAccountNftApprove<
   TMode extends WriteContractMode = undefined,
 >(
   config: TMode extends 'prepared'
     ? UseContractWriteConfig<
         PrepareWriteContractResult<
-          typeof iMulticall3ABI,
-          'blockAndAggregate'
+          typeof interopAccountNftABI,
+          'approve'
         >['request']['abi'],
-        'blockAndAggregate',
+        'approve',
         TMode
-      > & { functionName?: 'blockAndAggregate' }
+      > & { functionName?: 'approve' }
+    : UseContractWriteConfig<typeof interopAccountNftABI, 'approve', TMode> & {
+        abi?: never
+        functionName?: 'approve'
+      } = {} as any,
+) {
+  return useContractWrite<typeof interopAccountNftABI, 'approve', TMode>({
+    abi: interopAccountNftABI,
+    functionName: 'approve',
+    ...config,
+  } as any)
+}
+
+/**
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"createMainAccount"`.
+ */
+export function useInteropAccountNftCreateMainAccount<
+  TMode extends WriteContractMode = undefined,
+>(
+  config: TMode extends 'prepared'
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof interopAccountNftABI,
+          'createMainAccount'
+        >['request']['abi'],
+        'createMainAccount',
+        TMode
+      > & { functionName?: 'createMainAccount' }
     : UseContractWriteConfig<
-        typeof iMulticall3ABI,
-        'blockAndAggregate',
+        typeof interopAccountNftABI,
+        'createMainAccount',
         TMode
       > & {
         abi?: never
-        functionName?: 'blockAndAggregate'
+        functionName?: 'createMainAccount'
       } = {} as any,
 ) {
-  return useContractWrite<typeof iMulticall3ABI, 'blockAndAggregate', TMode>({
-    abi: iMulticall3ABI,
-    functionName: 'blockAndAggregate',
+  return useContractWrite<
+    typeof interopAccountNftABI,
+    'createMainAccount',
+    TMode
+  >({
+    abi: interopAccountNftABI,
+    functionName: 'createMainAccount',
     ...config,
   } as any)
 }
 
 /**
- * Wraps __{@link useContractWrite}__ with `abi` set to __{@link iMulticall3ABI}__ and `functionName` set to `"tryAggregate"`.
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"renounceOwnership"`.
  */
-export function useIMulticall3TryAggregate<
+export function useInteropAccountNftRenounceOwnership<
   TMode extends WriteContractMode = undefined,
 >(
   config: TMode extends 'prepared'
     ? UseContractWriteConfig<
         PrepareWriteContractResult<
-          typeof iMulticall3ABI,
-          'tryAggregate'
+          typeof interopAccountNftABI,
+          'renounceOwnership'
         >['request']['abi'],
-        'tryAggregate',
+        'renounceOwnership',
         TMode
-      > & { functionName?: 'tryAggregate' }
-    : UseContractWriteConfig<typeof iMulticall3ABI, 'tryAggregate', TMode> & {
-        abi?: never
-        functionName?: 'tryAggregate'
-      } = {} as any,
-) {
-  return useContractWrite<typeof iMulticall3ABI, 'tryAggregate', TMode>({
-    abi: iMulticall3ABI,
-    functionName: 'tryAggregate',
-    ...config,
-  } as any)
-}
-
-/**
- * Wraps __{@link useContractWrite}__ with `abi` set to __{@link iMulticall3ABI}__ and `functionName` set to `"tryBlockAndAggregate"`.
- */
-export function useIMulticall3TryBlockAndAggregate<
-  TMode extends WriteContractMode = undefined,
->(
-  config: TMode extends 'prepared'
-    ? UseContractWriteConfig<
-        PrepareWriteContractResult<
-          typeof iMulticall3ABI,
-          'tryBlockAndAggregate'
-        >['request']['abi'],
-        'tryBlockAndAggregate',
-        TMode
-      > & { functionName?: 'tryBlockAndAggregate' }
+      > & { functionName?: 'renounceOwnership' }
     : UseContractWriteConfig<
-        typeof iMulticall3ABI,
-        'tryBlockAndAggregate',
+        typeof interopAccountNftABI,
+        'renounceOwnership',
         TMode
       > & {
         abi?: never
-        functionName?: 'tryBlockAndAggregate'
+        functionName?: 'renounceOwnership'
       } = {} as any,
 ) {
-  return useContractWrite<typeof iMulticall3ABI, 'tryBlockAndAggregate', TMode>(
-    {
-      abi: iMulticall3ABI,
-      functionName: 'tryBlockAndAggregate',
-      ...config,
-    } as any,
-  )
+  return useContractWrite<
+    typeof interopAccountNftABI,
+    'renounceOwnership',
+    TMode
+  >({
+    abi: interopAccountNftABI,
+    functionName: 'renounceOwnership',
+    ...config,
+  } as any)
 }
 
 /**
- * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link iMulticall3ABI}__.
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"safeTransferFrom"`.
  */
-export function usePrepareIMulticall3Write<TFunctionName extends string>(
+export function useInteropAccountNftSafeTransferFrom<
+  TMode extends WriteContractMode = undefined,
+>(
+  config: TMode extends 'prepared'
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof interopAccountNftABI,
+          'safeTransferFrom'
+        >['request']['abi'],
+        'safeTransferFrom',
+        TMode
+      > & { functionName?: 'safeTransferFrom' }
+    : UseContractWriteConfig<
+        typeof interopAccountNftABI,
+        'safeTransferFrom',
+        TMode
+      > & {
+        abi?: never
+        functionName?: 'safeTransferFrom'
+      } = {} as any,
+) {
+  return useContractWrite<
+    typeof interopAccountNftABI,
+    'safeTransferFrom',
+    TMode
+  >({
+    abi: interopAccountNftABI,
+    functionName: 'safeTransferFrom',
+    ...config,
+  } as any)
+}
+
+/**
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"setApprovalForAll"`.
+ */
+export function useInteropAccountNftSetApprovalForAll<
+  TMode extends WriteContractMode = undefined,
+>(
+  config: TMode extends 'prepared'
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof interopAccountNftABI,
+          'setApprovalForAll'
+        >['request']['abi'],
+        'setApprovalForAll',
+        TMode
+      > & { functionName?: 'setApprovalForAll' }
+    : UseContractWriteConfig<
+        typeof interopAccountNftABI,
+        'setApprovalForAll',
+        TMode
+      > & {
+        abi?: never
+        functionName?: 'setApprovalForAll'
+      } = {} as any,
+) {
+  return useContractWrite<
+    typeof interopAccountNftABI,
+    'setApprovalForAll',
+    TMode
+  >({
+    abi: interopAccountNftABI,
+    functionName: 'setApprovalForAll',
+    ...config,
+  } as any)
+}
+
+/**
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"setPrice"`.
+ */
+export function useInteropAccountNftSetPrice<
+  TMode extends WriteContractMode = undefined,
+>(
+  config: TMode extends 'prepared'
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof interopAccountNftABI,
+          'setPrice'
+        >['request']['abi'],
+        'setPrice',
+        TMode
+      > & { functionName?: 'setPrice' }
+    : UseContractWriteConfig<typeof interopAccountNftABI, 'setPrice', TMode> & {
+        abi?: never
+        functionName?: 'setPrice'
+      } = {} as any,
+) {
+  return useContractWrite<typeof interopAccountNftABI, 'setPrice', TMode>({
+    abi: interopAccountNftABI,
+    functionName: 'setPrice',
+    ...config,
+  } as any)
+}
+
+/**
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"transferFrom"`.
+ */
+export function useInteropAccountNftTransferFrom<
+  TMode extends WriteContractMode = undefined,
+>(
+  config: TMode extends 'prepared'
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof interopAccountNftABI,
+          'transferFrom'
+        >['request']['abi'],
+        'transferFrom',
+        TMode
+      > & { functionName?: 'transferFrom' }
+    : UseContractWriteConfig<
+        typeof interopAccountNftABI,
+        'transferFrom',
+        TMode
+      > & {
+        abi?: never
+        functionName?: 'transferFrom'
+      } = {} as any,
+) {
+  return useContractWrite<typeof interopAccountNftABI, 'transferFrom', TMode>({
+    abi: interopAccountNftABI,
+    functionName: 'transferFrom',
+    ...config,
+  } as any)
+}
+
+/**
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"transferOwnership"`.
+ */
+export function useInteropAccountNftTransferOwnership<
+  TMode extends WriteContractMode = undefined,
+>(
+  config: TMode extends 'prepared'
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof interopAccountNftABI,
+          'transferOwnership'
+        >['request']['abi'],
+        'transferOwnership',
+        TMode
+      > & { functionName?: 'transferOwnership' }
+    : UseContractWriteConfig<
+        typeof interopAccountNftABI,
+        'transferOwnership',
+        TMode
+      > & {
+        abi?: never
+        functionName?: 'transferOwnership'
+      } = {} as any,
+) {
+  return useContractWrite<
+    typeof interopAccountNftABI,
+    'transferOwnership',
+    TMode
+  >({
+    abi: interopAccountNftABI,
+    functionName: 'transferOwnership',
+    ...config,
+  } as any)
+}
+
+/**
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"withdraw"`.
+ */
+export function useInteropAccountNftWithdraw<
+  TMode extends WriteContractMode = undefined,
+>(
+  config: TMode extends 'prepared'
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof interopAccountNftABI,
+          'withdraw'
+        >['request']['abi'],
+        'withdraw',
+        TMode
+      > & { functionName?: 'withdraw' }
+    : UseContractWriteConfig<typeof interopAccountNftABI, 'withdraw', TMode> & {
+        abi?: never
+        functionName?: 'withdraw'
+      } = {} as any,
+) {
+  return useContractWrite<typeof interopAccountNftABI, 'withdraw', TMode>({
+    abi: interopAccountNftABI,
+    functionName: 'withdraw',
+    ...config,
+  } as any)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountNftABI}__.
+ */
+export function usePrepareInteropAccountNftWrite<TFunctionName extends string>(
   config: Omit<
-    UsePrepareContractWriteConfig<typeof iMulticall3ABI, TFunctionName>,
+    UsePrepareContractWriteConfig<typeof interopAccountNftABI, TFunctionName>,
     'abi'
   > = {} as any,
 ) {
   return usePrepareContractWrite({
-    abi: iMulticall3ABI,
-    ...config,
-  } as UsePrepareContractWriteConfig<typeof iMulticall3ABI, TFunctionName>)
-}
-
-/**
- * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link iMulticall3ABI}__ and `functionName` set to `"aggregate"`.
- */
-export function usePrepareIMulticall3Aggregate(
-  config: Omit<
-    UsePrepareContractWriteConfig<typeof iMulticall3ABI, 'aggregate'>,
-    'abi' | 'functionName'
-  > = {} as any,
-) {
-  return usePrepareContractWrite({
-    abi: iMulticall3ABI,
-    functionName: 'aggregate',
-    ...config,
-  } as UsePrepareContractWriteConfig<typeof iMulticall3ABI, 'aggregate'>)
-}
-
-/**
- * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link iMulticall3ABI}__ and `functionName` set to `"aggregate3"`.
- */
-export function usePrepareIMulticall3Aggregate3(
-  config: Omit<
-    UsePrepareContractWriteConfig<typeof iMulticall3ABI, 'aggregate3'>,
-    'abi' | 'functionName'
-  > = {} as any,
-) {
-  return usePrepareContractWrite({
-    abi: iMulticall3ABI,
-    functionName: 'aggregate3',
-    ...config,
-  } as UsePrepareContractWriteConfig<typeof iMulticall3ABI, 'aggregate3'>)
-}
-
-/**
- * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link iMulticall3ABI}__ and `functionName` set to `"aggregate3Value"`.
- */
-export function usePrepareIMulticall3Aggregate3Value(
-  config: Omit<
-    UsePrepareContractWriteConfig<typeof iMulticall3ABI, 'aggregate3Value'>,
-    'abi' | 'functionName'
-  > = {} as any,
-) {
-  return usePrepareContractWrite({
-    abi: iMulticall3ABI,
-    functionName: 'aggregate3Value',
-    ...config,
-  } as UsePrepareContractWriteConfig<typeof iMulticall3ABI, 'aggregate3Value'>)
-}
-
-/**
- * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link iMulticall3ABI}__ and `functionName` set to `"blockAndAggregate"`.
- */
-export function usePrepareIMulticall3BlockAndAggregate(
-  config: Omit<
-    UsePrepareContractWriteConfig<typeof iMulticall3ABI, 'blockAndAggregate'>,
-    'abi' | 'functionName'
-  > = {} as any,
-) {
-  return usePrepareContractWrite({
-    abi: iMulticall3ABI,
-    functionName: 'blockAndAggregate',
+    abi: interopAccountNftABI,
     ...config,
   } as UsePrepareContractWriteConfig<
-    typeof iMulticall3ABI,
-    'blockAndAggregate'
+    typeof interopAccountNftABI,
+    TFunctionName
   >)
 }
 
 /**
- * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link iMulticall3ABI}__ and `functionName` set to `"tryAggregate"`.
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"approve"`.
  */
-export function usePrepareIMulticall3TryAggregate(
+export function usePrepareInteropAccountNftApprove(
   config: Omit<
-    UsePrepareContractWriteConfig<typeof iMulticall3ABI, 'tryAggregate'>,
+    UsePrepareContractWriteConfig<typeof interopAccountNftABI, 'approve'>,
     'abi' | 'functionName'
   > = {} as any,
 ) {
   return usePrepareContractWrite({
-    abi: iMulticall3ABI,
-    functionName: 'tryAggregate',
+    abi: interopAccountNftABI,
+    functionName: 'approve',
     ...config,
-  } as UsePrepareContractWriteConfig<typeof iMulticall3ABI, 'tryAggregate'>)
+  } as UsePrepareContractWriteConfig<typeof interopAccountNftABI, 'approve'>)
 }
 
 /**
- * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link iMulticall3ABI}__ and `functionName` set to `"tryBlockAndAggregate"`.
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"createMainAccount"`.
  */
-export function usePrepareIMulticall3TryBlockAndAggregate(
+export function usePrepareInteropAccountNftCreateMainAccount(
   config: Omit<
     UsePrepareContractWriteConfig<
-      typeof iMulticall3ABI,
-      'tryBlockAndAggregate'
+      typeof interopAccountNftABI,
+      'createMainAccount'
     >,
     'abi' | 'functionName'
   > = {} as any,
 ) {
   return usePrepareContractWrite({
-    abi: iMulticall3ABI,
-    functionName: 'tryBlockAndAggregate',
+    abi: interopAccountNftABI,
+    functionName: 'createMainAccount',
     ...config,
   } as UsePrepareContractWriteConfig<
-    typeof iMulticall3ABI,
-    'tryBlockAndAggregate'
+    typeof interopAccountNftABI,
+    'createMainAccount'
+  >)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"renounceOwnership"`.
+ */
+export function usePrepareInteropAccountNftRenounceOwnership(
+  config: Omit<
+    UsePrepareContractWriteConfig<
+      typeof interopAccountNftABI,
+      'renounceOwnership'
+    >,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return usePrepareContractWrite({
+    abi: interopAccountNftABI,
+    functionName: 'renounceOwnership',
+    ...config,
+  } as UsePrepareContractWriteConfig<
+    typeof interopAccountNftABI,
+    'renounceOwnership'
+  >)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"safeTransferFrom"`.
+ */
+export function usePrepareInteropAccountNftSafeTransferFrom(
+  config: Omit<
+    UsePrepareContractWriteConfig<
+      typeof interopAccountNftABI,
+      'safeTransferFrom'
+    >,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return usePrepareContractWrite({
+    abi: interopAccountNftABI,
+    functionName: 'safeTransferFrom',
+    ...config,
+  } as UsePrepareContractWriteConfig<
+    typeof interopAccountNftABI,
+    'safeTransferFrom'
+  >)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"setApprovalForAll"`.
+ */
+export function usePrepareInteropAccountNftSetApprovalForAll(
+  config: Omit<
+    UsePrepareContractWriteConfig<
+      typeof interopAccountNftABI,
+      'setApprovalForAll'
+    >,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return usePrepareContractWrite({
+    abi: interopAccountNftABI,
+    functionName: 'setApprovalForAll',
+    ...config,
+  } as UsePrepareContractWriteConfig<
+    typeof interopAccountNftABI,
+    'setApprovalForAll'
+  >)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"setPrice"`.
+ */
+export function usePrepareInteropAccountNftSetPrice(
+  config: Omit<
+    UsePrepareContractWriteConfig<typeof interopAccountNftABI, 'setPrice'>,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return usePrepareContractWrite({
+    abi: interopAccountNftABI,
+    functionName: 'setPrice',
+    ...config,
+  } as UsePrepareContractWriteConfig<typeof interopAccountNftABI, 'setPrice'>)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"transferFrom"`.
+ */
+export function usePrepareInteropAccountNftTransferFrom(
+  config: Omit<
+    UsePrepareContractWriteConfig<typeof interopAccountNftABI, 'transferFrom'>,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return usePrepareContractWrite({
+    abi: interopAccountNftABI,
+    functionName: 'transferFrom',
+    ...config,
+  } as UsePrepareContractWriteConfig<
+    typeof interopAccountNftABI,
+    'transferFrom'
+  >)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"transferOwnership"`.
+ */
+export function usePrepareInteropAccountNftTransferOwnership(
+  config: Omit<
+    UsePrepareContractWriteConfig<
+      typeof interopAccountNftABI,
+      'transferOwnership'
+    >,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return usePrepareContractWrite({
+    abi: interopAccountNftABI,
+    functionName: 'transferOwnership',
+    ...config,
+  } as UsePrepareContractWriteConfig<
+    typeof interopAccountNftABI,
+    'transferOwnership'
+  >)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountNftABI}__ and `functionName` set to `"withdraw"`.
+ */
+export function usePrepareInteropAccountNftWithdraw(
+  config: Omit<
+    UsePrepareContractWriteConfig<typeof interopAccountNftABI, 'withdraw'>,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return usePrepareContractWrite({
+    abi: interopAccountNftABI,
+    functionName: 'withdraw',
+    ...config,
+  } as UsePrepareContractWriteConfig<typeof interopAccountNftABI, 'withdraw'>)
+}
+
+/**
+ * Wraps __{@link useContractEvent}__ with `abi` set to __{@link interopAccountNftABI}__.
+ */
+export function useInteropAccountNftEvent<TEventName extends string>(
+  config: Omit<
+    UseContractEventConfig<typeof interopAccountNftABI, TEventName>,
+    'abi'
+  > = {} as any,
+) {
+  return useContractEvent({
+    abi: interopAccountNftABI,
+    ...config,
+  } as UseContractEventConfig<typeof interopAccountNftABI, TEventName>)
+}
+
+/**
+ * Wraps __{@link useContractEvent}__ with `abi` set to __{@link interopAccountNftABI}__ and `eventName` set to `"Approval"`.
+ */
+export function useInteropAccountNftApprovalEvent(
+  config: Omit<
+    UseContractEventConfig<typeof interopAccountNftABI, 'Approval'>,
+    'abi' | 'eventName'
+  > = {} as any,
+) {
+  return useContractEvent({
+    abi: interopAccountNftABI,
+    eventName: 'Approval',
+    ...config,
+  } as UseContractEventConfig<typeof interopAccountNftABI, 'Approval'>)
+}
+
+/**
+ * Wraps __{@link useContractEvent}__ with `abi` set to __{@link interopAccountNftABI}__ and `eventName` set to `"ApprovalForAll"`.
+ */
+export function useInteropAccountNftApprovalForAllEvent(
+  config: Omit<
+    UseContractEventConfig<typeof interopAccountNftABI, 'ApprovalForAll'>,
+    'abi' | 'eventName'
+  > = {} as any,
+) {
+  return useContractEvent({
+    abi: interopAccountNftABI,
+    eventName: 'ApprovalForAll',
+    ...config,
+  } as UseContractEventConfig<typeof interopAccountNftABI, 'ApprovalForAll'>)
+}
+
+/**
+ * Wraps __{@link useContractEvent}__ with `abi` set to __{@link interopAccountNftABI}__ and `eventName` set to `"ConsecutiveTransfer"`.
+ */
+export function useInteropAccountNftConsecutiveTransferEvent(
+  config: Omit<
+    UseContractEventConfig<typeof interopAccountNftABI, 'ConsecutiveTransfer'>,
+    'abi' | 'eventName'
+  > = {} as any,
+) {
+  return useContractEvent({
+    abi: interopAccountNftABI,
+    eventName: 'ConsecutiveTransfer',
+    ...config,
+  } as UseContractEventConfig<
+    typeof interopAccountNftABI,
+    'ConsecutiveTransfer'
+  >)
+}
+
+/**
+ * Wraps __{@link useContractEvent}__ with `abi` set to __{@link interopAccountNftABI}__ and `eventName` set to `"CreateMainAccount"`.
+ */
+export function useInteropAccountNftCreateMainAccountEvent(
+  config: Omit<
+    UseContractEventConfig<typeof interopAccountNftABI, 'CreateMainAccount'>,
+    'abi' | 'eventName'
+  > = {} as any,
+) {
+  return useContractEvent({
+    abi: interopAccountNftABI,
+    eventName: 'CreateMainAccount',
+    ...config,
+  } as UseContractEventConfig<typeof interopAccountNftABI, 'CreateMainAccount'>)
+}
+
+/**
+ * Wraps __{@link useContractEvent}__ with `abi` set to __{@link interopAccountNftABI}__ and `eventName` set to `"OwnershipTransferred"`.
+ */
+export function useInteropAccountNftOwnershipTransferredEvent(
+  config: Omit<
+    UseContractEventConfig<typeof interopAccountNftABI, 'OwnershipTransferred'>,
+    'abi' | 'eventName'
+  > = {} as any,
+) {
+  return useContractEvent({
+    abi: interopAccountNftABI,
+    eventName: 'OwnershipTransferred',
+    ...config,
+  } as UseContractEventConfig<
+    typeof interopAccountNftABI,
+    'OwnershipTransferred'
+  >)
+}
+
+/**
+ * Wraps __{@link useContractEvent}__ with `abi` set to __{@link interopAccountNftABI}__ and `eventName` set to `"Transfer"`.
+ */
+export function useInteropAccountNftTransferEvent(
+  config: Omit<
+    UseContractEventConfig<typeof interopAccountNftABI, 'Transfer'>,
+    'abi' | 'eventName'
+  > = {} as any,
+) {
+  return useContractEvent({
+    abi: interopAccountNftABI,
+    eventName: 'Transfer',
+    ...config,
+  } as UseContractEventConfig<typeof interopAccountNftABI, 'Transfer'>)
+}
+
+/**
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountRelayABI}__.
+ *
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x107c7789dea397EFBCA24ccAfF41698baFd82A72)
+ */
+export function useInteropAccountRelayWrite<
+  TFunctionName extends string,
+  TMode extends WriteContractMode = undefined,
+  TChainId extends number = keyof typeof interopAccountRelayAddress,
+>(
+  config: TMode extends 'prepared'
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof interopAccountRelayABI,
+          string
+        >['request']['abi'],
+        TFunctionName,
+        TMode
+      > & { address?: Address; chainId?: TChainId }
+    : UseContractWriteConfig<
+        typeof interopAccountRelayABI,
+        TFunctionName,
+        TMode
+      > & {
+        abi?: never
+        address?: never
+        chainId?: TChainId
+      } = {} as any,
+) {
+  return useContractWrite<typeof interopAccountRelayABI, TFunctionName, TMode>({
+    abi: interopAccountRelayABI,
+    address: interopAccountRelayAddress[80001],
+    ...config,
+  } as any)
+}
+
+/**
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountRelayABI}__ and `functionName` set to `"createAccount"`.
+ *
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x107c7789dea397EFBCA24ccAfF41698baFd82A72)
+ */
+export function useInteropAccountRelayCreateAccount<
+  TMode extends WriteContractMode = undefined,
+  TChainId extends number = keyof typeof interopAccountRelayAddress,
+>(
+  config: TMode extends 'prepared'
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof interopAccountRelayABI,
+          'createAccount'
+        >['request']['abi'],
+        'createAccount',
+        TMode
+      > & {
+        address?: Address
+        chainId?: TChainId
+        functionName?: 'createAccount'
+      }
+    : UseContractWriteConfig<
+        typeof interopAccountRelayABI,
+        'createAccount',
+        TMode
+      > & {
+        abi?: never
+        address?: never
+        chainId?: TChainId
+        functionName?: 'createAccount'
+      } = {} as any,
+) {
+  return useContractWrite<
+    typeof interopAccountRelayABI,
+    'createAccount',
+    TMode
+  >({
+    abi: interopAccountRelayABI,
+    address: interopAccountRelayAddress[80001],
+    functionName: 'createAccount',
+    ...config,
+  } as any)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountRelayABI}__.
+ *
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x107c7789dea397EFBCA24ccAfF41698baFd82A72)
+ */
+export function usePrepareInteropAccountRelayWrite<
+  TFunctionName extends string,
+>(
+  config: Omit<
+    UsePrepareContractWriteConfig<typeof interopAccountRelayABI, TFunctionName>,
+    'abi' | 'address'
+  > & { chainId?: keyof typeof interopAccountRelayAddress } = {} as any,
+) {
+  return usePrepareContractWrite({
+    abi: interopAccountRelayABI,
+    address: interopAccountRelayAddress[80001],
+    ...config,
+  } as UsePrepareContractWriteConfig<
+    typeof interopAccountRelayABI,
+    TFunctionName
+  >)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountRelayABI}__ and `functionName` set to `"createAccount"`.
+ *
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x107c7789dea397EFBCA24ccAfF41698baFd82A72)
+ */
+export function usePrepareInteropAccountRelayCreateAccount(
+  config: Omit<
+    UsePrepareContractWriteConfig<
+      typeof interopAccountRelayABI,
+      'createAccount'
+    >,
+    'abi' | 'address' | 'functionName'
+  > & { chainId?: keyof typeof interopAccountRelayAddress } = {} as any,
+) {
+  return usePrepareContractWrite({
+    abi: interopAccountRelayABI,
+    address: interopAccountRelayAddress[80001],
+    functionName: 'createAccount',
+    ...config,
+  } as UsePrepareContractWriteConfig<
+    typeof interopAccountRelayABI,
+    'createAccount'
+  >)
+}
+
+/**
+ * Wraps __{@link useContractEvent}__ with `abi` set to __{@link interopAccountRelayABI}__.
+ *
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x107c7789dea397EFBCA24ccAfF41698baFd82A72)
+ */
+export function useInteropAccountRelayEvent<TEventName extends string>(
+  config: Omit<
+    UseContractEventConfig<typeof interopAccountRelayABI, TEventName>,
+    'abi' | 'address'
+  > & { chainId?: keyof typeof interopAccountRelayAddress } = {} as any,
+) {
+  return useContractEvent({
+    abi: interopAccountRelayABI,
+    address: interopAccountRelayAddress[80001],
+    ...config,
+  } as UseContractEventConfig<typeof interopAccountRelayABI, TEventName>)
+}
+
+/**
+ * Wraps __{@link useContractEvent}__ with `abi` set to __{@link interopAccountRelayABI}__ and `eventName` set to `"CreateSideAccount"`.
+ *
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x107c7789dea397EFBCA24ccAfF41698baFd82A72)
+ */
+export function useInteropAccountRelayCreateSideAccountEvent(
+  config: Omit<
+    UseContractEventConfig<typeof interopAccountRelayABI, 'CreateSideAccount'>,
+    'abi' | 'address' | 'eventName'
+  > & { chainId?: keyof typeof interopAccountRelayAddress } = {} as any,
+) {
+  return useContractEvent({
+    abi: interopAccountRelayABI,
+    address: interopAccountRelayAddress[80001],
+    eventName: 'CreateSideAccount',
+    ...config,
+  } as UseContractEventConfig<
+    typeof interopAccountRelayABI,
+    'CreateSideAccount'
   >)
 }
