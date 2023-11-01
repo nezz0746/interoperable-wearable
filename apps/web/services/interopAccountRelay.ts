@@ -13,19 +13,24 @@ type AccountCreationArgs = {
 };
 
 const account_key = process.env.RELAYER_PRIVATE_KEY as `0x${string}`;
+const mumbai_rpc_url = process.env.MUMBAI_RPC_URL as string;
 
 if (!account_key) {
   throw new Error("RELAYER_PRIVATE_KEY is not set");
 }
 
+if (!mumbai_rpc_url) {
+  throw new Error("MUMBAI_RPC_URL is not set");
+}
+
 const getClient = (chain: Chain) =>
   createPublicClient({ chain, transport: http() });
 
-const getRelayer = (chain: Chain) =>
+const getRelayer = (chain: Chain, url: string) =>
   createWalletClient({
     account: privateKeyToAccount(account_key),
     chain,
-    transport: http(),
+    transport: http(url),
   });
 
 export const createAccountOnSidechain = async ({
@@ -40,12 +45,17 @@ export const createAccountOnSidechain = async ({
     80001: polygonMumbai,
   };
 
+  const rpcUrls: Record<number, string> = {
+    80001: mumbai_rpc_url,
+  };
+
   const chain = chains[Number(chainId)];
+  const rpcUrl = rpcUrls[Number(chainId)];
   const accountRelayAddress =
     interopAccountRelayAddress[Number(chainId) as 80001];
 
   const client = getClient(chain);
-  const account = getRelayer(chain);
+  const account = getRelayer(chain, rpcUrl);
   const sender = (await account.getAddresses())[0];
 
   const { request } = await client.simulateContract({
