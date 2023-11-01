@@ -8,11 +8,28 @@ import {InteropAccountNFT} from "../src/InteropAccount.sol";
 import {InteropAccountRelay} from "../src/InteropAccountRelay.sol";
 
 contract DeployIWS is BaseScript {
+    function mintAccount(address interopAccount) public {
+        _setChainsTestnet();
+
+        _createAccount(interopAccount, mainChains);
+    }
+
     function deployInterop() public {
         _setChainsTestnet();
 
         _deployInterop(mainChains);
         _deployRelay(sideChains);
+    }
+
+    function _createAccount(
+        address interopAccount,
+        DeployementChain[] memory targetChains
+    ) internal setEnvDeploy(Cycle.Testnet) broadcastOn(targetChains) {
+        (, address sender, ) = vm.readCallers();
+
+        InteropAccountNFT(interopAccount).createMainAccount{value: 0.1 ether}(
+            sender
+        );
     }
 
     function _deployInterop(
@@ -27,7 +44,7 @@ contract DeployIWS is BaseScript {
 
         interopNFT.setPrice(0.1 ether);
 
-        _saveImplementations(address(interopNFT), "InteropAccountNFT");
+        _saveImplementations(address(interopNFT), "InteropAccount");
     }
 
     function _deployRelay(
