@@ -7,5 +7,17 @@ export const handleCreateAccount: ActionFn = async (
   // Send transaction on Mumbai network
   const blockEvent = event as TransactionEvent;
 
-  // TODO: Send transaction to own server
+  const baseURL = await context.storage.getStr("apiBaseURL");
+
+  const relayerURL = `${baseURL}/api/create-account`;
+
+  console.log("Sending to relayer", relayerURL);
+
+  await fetch(relayerURL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(blockEvent),
+  });
 };
