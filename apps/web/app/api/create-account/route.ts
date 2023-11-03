@@ -17,6 +17,8 @@ export async function POST(req: NextRequest) {
     ...accountProxyABI,
   ];
 
+  let accountCreationTxHash: string | undefined;
+
   for (const log of body.logs) {
     try {
       const event = decodeEventLog({
@@ -29,12 +31,16 @@ export async function POST(req: NextRequest) {
       if (event.eventName === "CreateMainAccount") {
         const { chainId, tokenContract, tokenId } = event.args;
 
-        await createAccountOnSidechain({ chainId, tokenContract, tokenId });
+        accountCreationTxHash = await createAccountOnSidechain({
+          chainId,
+          tokenContract,
+          tokenId,
+        });
       }
     } catch (error) {
       console.log({ error });
     }
   }
 
-  return NextResponse.json({ abis });
+  return NextResponse.json({ accountCreationTxHash });
 }

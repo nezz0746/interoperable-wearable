@@ -17,7 +17,7 @@
     "react": "^18.1.0",
     "react-dom": "18.1.0",
     "shared-config": "*",
-    "viem": "^1.18.2",
+    "viem": "^1.18.3",
     "wagmi": "^1.4.5",
     "wagmi-config": "*"
   },
