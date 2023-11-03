@@ -1,0 +1,21 @@
+account_id: ""
+actions:
+  nezz0746/terrterr:
+    runtime: v2
+    sources: actions
+    specs:
+      createAccount:
+        description: Responds to the CreateMainAccount event
+        function: interopAccount:handleCreateAccount
+        trigger:
+          type: transaction
+          transaction:
+            status:
+              - mined
+            filters:
+              - network: 5
+                eventEmitted:
+                  contract:
+                    address: {{ address }}
+                  name: CreateMainAccount
+project_slug: ""
