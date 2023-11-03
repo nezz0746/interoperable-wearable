@@ -4,7 +4,7 @@ pragma solidity ^0.8.19;
 import {Script, console2} from "forge-std/Script.sol";
 import {BaseScript} from "./Base.s.sol";
 
-import {InteropAccountNFT} from "../src/InteropAccount.sol";
+import {InteropAccount} from "../src/InteropAccount.sol";
 import {InteropAccountRelay} from "../src/InteropAccountRelay.sol";
 
 contract DeployIWS is BaseScript {
@@ -27,7 +27,7 @@ contract DeployIWS is BaseScript {
     ) internal setEnvDeploy(Cycle.Testnet) broadcastOn(targetChains) {
         (, address sender, ) = vm.readCallers();
 
-        InteropAccountNFT(interopAccount).createMainAccount{value: 0.1 ether}(
+        InteropAccount(interopAccount).createMainAccount{value: 0.1 ether}(
             sender
         );
     }
@@ -35,7 +35,7 @@ contract DeployIWS is BaseScript {
     function _deployInterop(
         DeployementChain[] memory targetChains
     ) internal setEnvDeploy(Cycle.Testnet) broadcastOn(targetChains) {
-        InteropAccountNFT interopNFT = new InteropAccountNFT(
+        InteropAccount interopNFT = new InteropAccount(
             registry,
             accountProxy,
             accountImplementation,

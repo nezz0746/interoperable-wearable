@@ -18,8 +18,10 @@ export default defineConfig(async () => {
     );
 
     for (const contractName of contractNames) {
-      const name = contractName.split(".")[0];
+      let name = contractName.split(".")[0];
+
       if (!deployments[name]) deployments[name] = {};
+
       deployments[name][chainId] = await (
         await fs
           .readFile(

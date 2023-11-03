@@ -8,11 +8,7 @@ import {IInteropAccount} from "./interfaces/IInteropAccount.sol";
 import {ERC6551AccountCreator} from "./extensions/ERC6551AccountCreator.sol";
 import {ERC721Drop} from "./lib/ERC721Drop.sol";
 
-contract InteropAccountNFT is
-    IInteropAccount,
-    ERC721Drop,
-    ERC6551AccountCreator
-{
+contract InteropAccount is IInteropAccount, ERC721Drop, ERC6551AccountCreator {
     constructor(
         address registry,
         address accountProxy,
