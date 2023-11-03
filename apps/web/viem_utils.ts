@@ -27,9 +27,9 @@ const rpcUrls: Record<number, string> = {
   80001: mumbaiRpcUrl,
 };
 
-const getClient = (rpcUrl: string, chainId: number) => {
-  const chain = chains[chainId ?? defaultChainId];
-  const rpcUrlActual = rpcUrls[chainId ?? defaultChainId];
+const getClient = () => {
+  const chain = chains[defaultChainId];
+  const rpcUrlActual = rpcUrls[defaultChainId];
 
   return createWalletClient({
     account: privateKeyToAccount(account_key),

@@ -15,11 +15,12 @@ type NetworkConfig = {
   chainId: number;
 };
 
-export const createAccountOnSidechain = async (
-  { chainId: interopNftChainId, tokenContract, tokenId }: AccountCreationArgs,
-  { rpcURL, chainId: relayerChainId }: NetworkConfig
-) => {
-  const client = getClient(rpcURL, relayerChainId);
+export const createAccountOnSidechain = async ({
+  chainId: interopNftChainId,
+  tokenContract,
+  tokenId,
+}: AccountCreationArgs) => {
+  const client = getClient();
 
   const accountAccountRelayAddress = interopAccountRelayAddress[defaultChainId];
 

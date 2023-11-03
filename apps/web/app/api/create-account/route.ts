@@ -36,17 +36,11 @@ export async function POST(req: NextRequest) {
       if (event.eventName === "CreateMainAccount") {
         const { chainId, tokenContract, tokenId } = event.args;
 
-        const rpcURL = body.gateway;
-        const relayerChainId = parseInt(body.chainId);
-
-        accountCreationTxHash = await createAccountOnSidechain(
-          {
-            chainId,
-            tokenContract,
-            tokenId,
-          },
-          { rpcURL, chainId: relayerChainId }
-        );
+        accountCreationTxHash = await createAccountOnSidechain({
+          chainId,
+          tokenContract,
+          tokenId,
+        });
       }
     } catch (error) {
       console.log({ error });
