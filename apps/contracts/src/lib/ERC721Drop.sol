@@ -9,6 +9,8 @@ contract ERC721Drop is ERC721A, Ownable {
 
     uint256 public price;
 
+    event SetPrice(uint256 price);
+
     constructor(
         string memory name,
         string memory symbol,
@@ -32,6 +34,8 @@ contract ERC721Drop is ERC721A, Ownable {
      */
     function setPrice(uint256 _price) public onlyOwner {
         price = _price;
+
+        emit SetPrice(_price);
     }
 
     /**
