@@ -10,17 +10,21 @@ type AccountCreationArgs = {
   tokenId: bigint;
 };
 
-export const createAccountOnSidechain = async ({
-  chainId,
-  tokenContract,
-  tokenId,
-}: AccountCreationArgs) => {
-  const client = getClient();
+type NetworkConfig = {
+  rpcURL: string;
+  chainId: number;
+};
+
+export const createAccountOnSidechain = async (
+  { chainId: interopNftChainId, tokenContract, tokenId }: AccountCreationArgs,
+  { rpcURL, chainId: relayerChainId }: NetworkConfig
+) => {
+  const client = getClient(rpcURL, relayerChainId);
 
   const accountAccountRelayAddress = interopAccountRelayAddress[defaultChainId];
 
   const { request } = await client.simulateContract({
-    args: [chainId, tokenContract, tokenId],
+    args: [interopNftChainId, tokenContract, tokenId],
     chain: client.chain,
     account: client.account,
     abi: interopAccountRelayABI,

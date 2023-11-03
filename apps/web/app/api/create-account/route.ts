@@ -9,7 +9,8 @@ import { decodeEventLog } from "viem";
 import { createAccountOnSidechain } from "@/services/interopAccountRelay";
 
 export async function POST(req: NextRequest) {
-  const body: TransactionEvent = await req.json();
+  const body: TransactionEvent & { gateway: string; chainId: string } =
+    await req.json();
 
   const abis = [
     ...interopAccountNftABI,
@@ -18,6 +19,10 @@ export async function POST(req: NextRequest) {
   ];
 
   let accountCreationTxHash: string | undefined;
+  if (body.logs.length === 0) return NextResponse.json({ message: "No logs" });
+
+  console.log("BODY: ", JSON.stringify(body));
+  console.log("LOGS: ", JSON.stringify(body.logs));
 
   for (const log of body.logs) {
     try {
@@ -31,11 +36,17 @@ export async function POST(req: NextRequest) {
       if (event.eventName === "CreateMainAccount") {
         const { chainId, tokenContract, tokenId } = event.args;
 
-        accountCreationTxHash = await createAccountOnSidechain({
-          chainId,
-          tokenContract,
-          tokenId,
-        });
+        const rpcURL = body.gateway;
+        const relayerChainId = parseInt(body.chainId);
+
+        accountCreationTxHash = await createAccountOnSidechain(
+          {
+            chainId,
+            tokenContract,
+            tokenId,
+          },
+          { rpcURL, chainId: relayerChainId }
+        );
       }
     } catch (error) {
       console.log({ error });

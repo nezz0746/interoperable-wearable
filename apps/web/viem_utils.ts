@@ -10,7 +10,7 @@ const defaultChainId = 80001;
 if (!account_key) {
   throw new Error("RELAYER_PRIVATE_KEY is not set");
 } else {
-  console.log("RELAYER_PRIVATE_KEY: ", account_key);
+  console.log("RELAYER_PRIVATE_KEY: OK [...]");
 }
 
 if (!mumbaiRpcUrl) {
@@ -27,14 +27,14 @@ const rpcUrls: Record<number, string> = {
   80001: mumbaiRpcUrl,
 };
 
-const getClient = () => {
-  const chain = chains[defaultChainId];
-  const rpcUrl = rpcUrls[defaultChainId];
+const getClient = (rpcUrl: string, chainId: number) => {
+  const chain = chains[chainId ?? defaultChainId];
+  const rpcUrlActual = rpcUrls[chainId ?? defaultChainId];
 
   return createWalletClient({
     account: privateKeyToAccount(account_key),
     chain,
-    transport: http(rpcUrl),
+    transport: http(rpcUrlActual),
   }).extend(publicActions);
 };
 
