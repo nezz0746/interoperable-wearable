@@ -22,8 +22,11 @@ const Home: NextPage = () => {
           <div className="w-full lg:w-2/3 flex flex-col">
             {/* Metadata Display */}
             <div className="border border-black flex flex-col md:flex-row items-center md:items-start">
-              <div className="w-[300px] h-[300px] xl:w-[400px] xl:h-[400px] aspect-square">
-                <img src={squareSrc} className="w-full h-full" />
+              <div className="w-[300px] h-[300px] xl:w-[400px] xl:h-[400px] aspect-square p-4">
+                <img
+                  src={squareSrc}
+                  className="w-full h-full  border border-black"
+                />
               </div>
               <div className="p-4">
                 <div className="border-b-2 pb-2 mb-4 flex flex-row justify-between">
