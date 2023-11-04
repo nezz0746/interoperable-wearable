@@ -39,7 +39,10 @@ const OwnedNFTList = ({ address }: OwnedNFTListProps) => {
 
   return ownedNftsWithAccount.map((nft) => {
     return (
-      <div className=" border border-black h-[60px] flex flex-row gap-2">
+      <div
+        key={nft.account}
+        className=" border border-black h-[60px] flex flex-row gap-2"
+      >
         <img src={squareSrc} className="h-full" />
         <div className="flex flex-col">
           <p className="font-main font-bold">

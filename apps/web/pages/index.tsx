@@ -36,7 +36,7 @@ const Home: NextPage = () => {
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {Array.from({ length: 3 }).map((_, i) => {
                     return (
-                      <div>
+                      <div key={i}>
                         <img
                           src={squareSrc}
                           className={classNames("h-auto max-w-full")}
