@@ -30,6 +30,7 @@ const ConnectButton = () => {
                 userSelect: "none",
               },
             })}
+            className="font-main"
           >
             {(() => {
               if (!connected) {
@@ -50,7 +51,7 @@ const ConnectButton = () => {
                 <div style={{ display: "flex", gap: 12 }}>
                   <button
                     onClick={openChainModal}
-                    className="btn btn-outline"
+                    className="btn btn-outline rounded-none"
                     type="button"
                   >
                     {chain.hasIcon && (
@@ -78,7 +79,7 @@ const ConnectButton = () => {
                   <button
                     onClick={openAccountModal}
                     type="button"
-                    className="btn btn-outline"
+                    className="btn btn-outline rounded-none"
                   >
                     {account.displayName}
                     {account.displayBalance

@@ -4,7 +4,11 @@ module.exports = {
     "./components/**/*.{html,js,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        main: ["Play", "sans-serif"],
+      },
+    },
   },
   plugins: [require("daisyui")],
 };

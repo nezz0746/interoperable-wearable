@@ -28,8 +28,6 @@ if (mainnetChainEnabled) {
   appChains = [base];
 }
 
-console.log({ appChains });
-
 const { chains, publicClient } = configureChains(appChains, [publicProvider()]);
 
 const { connectors } = getDefaultWallets({

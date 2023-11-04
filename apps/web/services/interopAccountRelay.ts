@@ -10,11 +10,6 @@ type AccountCreationArgs = {
   tokenId: bigint;
 };
 
-type NetworkConfig = {
-  rpcURL: string;
-  chainId: number;
-};
-
 export const createAccountOnSidechain = async ({
   chainId: interopNftChainId,
   tokenContract,
