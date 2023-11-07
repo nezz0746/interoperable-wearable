@@ -1,9 +1,9 @@
 import nft from "@/services/alchemy";
-import { OwnedNft } from "alchemy-sdk";
 import { useCallback, useEffect, useState } from "react";
 import { Address } from "viem";
 import { useWalletClient } from "wagmi";
 import { TokenboundClient } from "@tokenbound/sdk";
+import { NftWithAccount, useNftsStore } from "./useNftsStore";
 
 type UseNFTProps = {
   tokenContract: Address;
@@ -11,24 +11,26 @@ type UseNFTProps = {
   chainId: number;
 };
 
-type OwneNFTWithAccount = OwnedNft & {
-  account: Address;
-};
-
 const useNfts = ({ tokenContract, address, chainId }: UseNFTProps) => {
   const { data: walletClient } = useWalletClient({ chainId });
-  const [ownedNftsWithAccount, setOwnedNftsWithAccount] = useState<
-    OwneNFTWithAccount[]
-  >([]);
+  const {
+    nftsWithAccount,
+    setNftsWithAccount,
+    pendingNftsWithAccount,
+    clearPendingNFT,
+  } = useNftsStore();
+  const [currentIntervalId, setIntervalId] = useState<NodeJS.Timeout | null>(
+    null
+  );
 
   const fetchNfts = useCallback(async () => {
     if (!nft[chainId] || !walletClient) return;
 
-    const data = await nft[chainId].getNftsForOwner(address, {
+    const data = await nft[chainId].getMintedNfts(address, {
       contractAddresses: [tokenContract],
     });
 
-    if (data.ownedNfts) {
+    if (data.nfts) {
       console.log({ walletClient });
       const tokenbountClient = new TokenboundClient({
         // @ts-ignore
@@ -36,28 +38,66 @@ const useNfts = ({ tokenContract, address, chainId }: UseNFTProps) => {
         chainId,
       });
 
-      const ownedNftsWithAccount = data.ownedNfts.map((ownedNft) => {
+      const nfts = data.nfts.map((nft) => {
         const account = tokenbountClient.getAccount({
           tokenContract,
-          tokenId: ownedNft.tokenId,
+          tokenId: nft.tokenId,
         });
 
         return {
-          ...ownedNft,
+          ...nft,
           account,
-        } as OwneNFTWithAccount;
+        } as NftWithAccount;
       });
 
-      setOwnedNftsWithAccount(ownedNftsWithAccount);
+      const hashes = nfts.map((nft) => nft.transactionHash);
+
+      console.log({
+        hashes,
+        pendingNftsWithAccount,
+        hash: pendingNftsWithAccount?.hash,
+      });
+
+      if (
+        pendingNftsWithAccount &&
+        hashes.includes(pendingNftsWithAccount.hash)
+      ) {
+        clearPendingNFT();
+        currentIntervalId && clearInterval(currentIntervalId);
+        setIntervalId(null);
+      }
+
+      setNftsWithAccount(nfts);
     }
-  }, [walletClient]);
+  }, [
+    walletClient,
+    tokenContract,
+    address,
+    chainId,
+    pendingNftsWithAccount,
+    currentIntervalId,
+  ]);
 
   useEffect(() => {
     fetchNfts();
   }, [walletClient, address]);
 
+  useEffect(() => {
+    if (pendingNftsWithAccount) {
+      const intervalId = setInterval(() => {
+        fetchNfts();
+      }, 3000);
+
+      setIntervalId(intervalId);
+
+      return () => clearInterval(intervalId);
+    }
+  }, [pendingNftsWithAccount]);
+
   return {
-    ownedNftsWithAccount,
+    nftsWithAccount,
+    pendingNftsWithAccount,
+    refetch: fetchNfts,
   };
 };
 

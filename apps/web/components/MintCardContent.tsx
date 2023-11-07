@@ -6,59 +6,83 @@ import {
   usePrepareInteropAccountCreateMainAccount,
 } from "wagmi-config/generated";
 import Title from "./Title";
+import OwnedNFTsComponent from "./OwnedNFTsComponent";
+import useChain from "hooks/useChain";
+import { useNftsStore } from "hooks/useNftsStore";
 
 const MintCardContent = () => {
-  const { data: price } = useInteropAccountPrice();
+  const { unsupportedChain } = useChain();
+
+  const { data: price } = useInteropAccountPrice({
+    enabled: !unsupportedChain,
+  });
+
   const { address } = useAccount();
 
   return (
-    <div className=" border border-black max-h-[400px] flex flex-col p-4">
-      <div className="flex flex-col gap-2">
-        <Title text="Mint" />
-        <div className="flex flex-row w-full font-main justify-between">
-          <p>Price </p>
-          <p>{price ? formatEther(price) : "--"} ETH</p>
+    <>
+      <div className=" border border-black max-h-[400px] flex flex-col p-4">
+        <div className="flex flex-col gap-2">
+          <Title text="Mint" />
+          <div className="flex flex-row w-full font-main justify-between">
+            <p>Price </p>
+            <p>{price ? formatEther(price) : "--"} ETH</p>
+          </div>
+          {address && price ? (
+            <MintButton
+              unsupportedChain={unsupportedChain}
+              address={address}
+              price={price}
+            />
+          ) : null}
         </div>
-        {address && price ? (
-          <MintButton address={address} price={price} />
-        ) : null}
       </div>
-    </div>
+      <OwnedNFTsComponent />
+    </>
   );
 };
 
 type MintButtonProps = {
   address: Address;
   price: bigint;
+  unsupportedChain: boolean;
 };
 
-const MintButton = ({ address, price }: MintButtonProps) => {
+const MintButton = ({ address, price, unsupportedChain }: MintButtonProps) => {
+  const addPendingNFT = useNftsStore((state) => state.addPendingNFT);
   const { config, isError } = usePrepareInteropAccountCreateMainAccount({
     args: [address],
     value: price,
+    enabled: !unsupportedChain,
   });
 
   const {
     data,
     write,
     isLoading: pendingConfirmation,
-  } = useContractWrite(config);
+  } = useContractWrite({
+    ...config,
+    onSuccess: ({ hash }) => {
+      addPendingNFT({ tokenId: "???", account: `0x[...]`, hash });
+    },
+  });
 
   const { isLoading: transactionLoading } = useWaitForTransaction(data);
 
   const loading = pendingConfirmation || transactionLoading;
-  const disabled = loading || isError;
+  const disabled = loading || isError || unsupportedChain;
+
+  const onClick = () => {
+    write && write();
+  };
 
   return (
     <button
-      className={classNames("btn bg-black rounded-none", {
-        loading,
-      })}
+      className={classNames("btn btn-neutral rounded-none")}
       disabled={disabled}
-      onClick={() => {
-        write && write();
-      }}
+      onClick={onClick}
     >
+      {loading && <span className="loading loading-spinner"></span>}
       MINT
     </button>
   );
