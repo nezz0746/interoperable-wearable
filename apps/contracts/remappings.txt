@@ -6,3 +6,4 @@ erc6551/=lib/contracts/lib/erc6551/src/
 openzeppelin-contracts/=lib/contracts/lib/openzeppelin-contracts
 fx-portal/=lib/fx-portal/contracts/
 ERC721A/=lib/ERC721A/contracts/
+multicall-authenticated/=lib/contracts/lib/multicall-authenticated/src

@@ -6,6 +6,7 @@ import {BaseScript} from "./Base.s.sol";
 
 import {InteropAccount} from "../src/InteropAccount.sol";
 import {InteropAccountRelay} from "../src/InteropAccountRelay.sol";
+import {AccountItemConfiguration} from "../src/lib/AccountItem.sol";
 
 contract DeployIWS is BaseScript {
     function mintAccount(address interopAccount) public {
@@ -35,7 +36,14 @@ contract DeployIWS is BaseScript {
     function _deployInterop(
         DeployementChain[] memory targetChains
     ) internal setEnvDeploy(Cycle.Testnet) broadcastOn(targetChains) {
+        // TODO: Add items config here
+        AccountItemConfiguration[]
+            memory deliverablesConfiguration = new AccountItemConfiguration[](
+                0
+            );
+
         InteropAccount interopNFT = new InteropAccount(
+            deliverablesConfiguration,
             registry,
             accountProxy,
             accountImplementation,
@@ -50,7 +58,14 @@ contract DeployIWS is BaseScript {
     function _deployRelay(
         DeployementChain[] memory targetChains
     ) internal setEnvDeploy(Cycle.Testnet) broadcastOn(targetChains) {
+        // TODO: Add items config here
+        AccountItemConfiguration[]
+            memory deliverablesConfiguration = new AccountItemConfiguration[](
+                0
+            );
+
         InteropAccountRelay interopRelay = new InteropAccountRelay(
+            deliverablesConfiguration,
             registry,
             accountProxy,
             accountImplementation

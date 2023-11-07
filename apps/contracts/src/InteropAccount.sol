@@ -6,10 +6,18 @@ import {AccountProxy} from "tokenbound/AccountProxy.sol";
 
 import {IInteropAccount} from "./interfaces/IInteropAccount.sol";
 import {ERC6551AccountCreator} from "./extensions/ERC6551AccountCreator.sol";
-import {ERC721Drop} from "./lib/ERC721Drop.sol";
+import {ERC721Drop} from "./tokens/ERC721Drop.sol";
+import {AccountItemConfiguration} from "./lib/AccountItem.sol";
+import {AccountItemDelivery} from "./extensions/AccountItemDelivery.sol";
 
-contract InteropAccount is IInteropAccount, ERC721Drop, ERC6551AccountCreator {
+contract InteropAccount is
+    IInteropAccount,
+    ERC721Drop,
+    ERC6551AccountCreator,
+    AccountItemDelivery
+{
     constructor(
+        AccountItemConfiguration[] memory deliverablesConfiguration,
         address registry,
         address accountProxy,
         address implementation,
@@ -17,6 +25,7 @@ contract InteropAccount is IInteropAccount, ERC721Drop, ERC6551AccountCreator {
     )
         ERC721Drop("InteropNFTMain", "INFTM", 0, _maxSupply)
         ERC6551AccountCreator(registry, accountProxy, implementation)
+        AccountItemDelivery(deliverablesConfiguration)
     {
         maxSupply = _maxSupply;
     }
@@ -39,7 +48,10 @@ contract InteropAccount is IInteropAccount, ERC721Drop, ERC6551AccountCreator {
         _safeMint(recipient, 1);
 
         // Create account on root chain
-        _createAccount(block.chainid, address(this), tokenId);
+        address account = _createAccount(block.chainid, address(this), tokenId);
+
+        // Deliver items to account
+        _deliverItems(account);
 
         // Emit event for side chain to listen to and create account with the same chainId
         emit CreateMainAccount(block.chainid, address(this), tokenId);
