@@ -5,7 +5,7 @@ import { localhost } from "wagmi/chains";
 const useChain = () => {
   const { chain, chains } = useNetwork();
 
-  const unsupportedChain = !chains?.find((c) => c.id === chain?.id);
+  const unsupportedChain = chain?.unsupported ?? false;
 
   const chainId = chain?.id ?? defaultChain.id;
 
@@ -13,6 +13,7 @@ const useChain = () => {
     isLocal: chainId === localhost.id,
     chainId,
     unsupportedChain,
+    blockExplorer: chain?.blockExplorers?.default.url,
   };
 };
 

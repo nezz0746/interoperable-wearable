@@ -12,9 +12,3 @@ export const testnetChainEnabled =
 
 export const mainnetChainEnabled =
   process.env.NEXT_PUBLIC_MAINNET_CHAINS_ENABLED === "true";
-
-console.log({
-  localChainEnabled,
-  testnetChainEnabled,
-  mainnetChainEnabled,
-});

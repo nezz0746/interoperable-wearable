@@ -31,7 +31,6 @@ const useNfts = ({ tokenContract, address, chainId }: UseNFTProps) => {
     });
 
     if (data.nfts) {
-      console.log({ walletClient });
       const tokenbountClient = new TokenboundClient({
         // @ts-ignore
         walletClient,
@@ -51,12 +50,6 @@ const useNfts = ({ tokenContract, address, chainId }: UseNFTProps) => {
       });
 
       const hashes = nfts.map((nft) => nft.transactionHash);
-
-      console.log({
-        hashes,
-        pendingNftsWithAccount,
-        hash: pendingNftsWithAccount?.hash,
-      });
 
       if (
         pendingNftsWithAccount &&
