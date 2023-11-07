@@ -35,14 +35,22 @@ const ConnectButton = () => {
             {(() => {
               if (!connected) {
                 return (
-                  <button onClick={openConnectModal} type="button">
+                  <button
+                    className="btn btn-outline rounded-none"
+                    onClick={openConnectModal}
+                    type="button"
+                  >
                     Connect Wallet
                   </button>
                 );
               }
               if (chain.unsupported) {
                 return (
-                  <button onClick={openChainModal} type="button">
+                  <button
+                    className="btn btn-outline rounded-none"
+                    onClick={openChainModal}
+                    type="button"
+                  >
                     Wrong network
                   </button>
                 );
