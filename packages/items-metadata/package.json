@@ -1,0 +1,15 @@
+{
+  "name": "items-metadata",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "create": "tsx ./index.ts"
+  },
+  "devDependencies": {
+    "tsx": "^3.14.0"
+  },
+  "dependencies": {
+    "openai": "^4.16.1",
+    "web3.storage": "^4.5.5"
+  }
+}

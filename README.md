@@ -75,3 +75,6 @@ RELAYER_PRIVATE_KEY=
 Deploy nextjs app on vercel
 
 This scripts feeds the deployed artifact InteropAccountNFT's address into the .yaml config & deploy the action to tenderly. You need to install the tenderly-cli & run `tenderly login` first
+
+
+### 4. Assets & Metadata Needed
