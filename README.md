@@ -23,6 +23,9 @@ Note: if neede here's how to [install foundry](https://getfoundry.sh/)
 ## Deploy Procedure
 
 Quick Look:
+- Prepare metatdata in items-metadata package by running script & save metadata cids
+in `items-metadata.json`.
+- Prepare script with correct items to be delivered & appropriate name symbol & uri in `app/contracts/scrips/DeployIWS.sol`
 - Deploy smart contracts & generate wagmi hooks by running: `deploy:testnets`
 - Push Code to deploy on vercel (or any provider), so that relay endpoint is up for the actions to be relayed. (Set enpoint base URI in Tenerly if not done)
 - Add InteropAccount contract address in Teenderly project (Could see if can add programatically)
