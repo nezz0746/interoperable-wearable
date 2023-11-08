@@ -22,6 +22,12 @@ Note: if neede here's how to [install foundry](https://getfoundry.sh/)
 
 ## Deploy Procedure
 
+Quick Look:
+- Deploy smart contracts & generate wagmi hooks by running: `deploy:testnets`
+- Push Code to deploy on vercel (or any provider), so that relay endpoint is up for the actions to be relayed. (Set enpoint base URI in Tenerly if not done)
+- Add InteropAccount contract address in Teenderly project (Could see if can add programatically)
+- Deploy actions by running: `deploy:actions:testnets`
+
 Steps to deploy the Interop NFT bound accounts
 
 ### 1. Deploy InteropAccount & InteropAccountRelay
