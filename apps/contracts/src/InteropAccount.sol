@@ -7,7 +7,7 @@ import {AccountProxy} from "tokenbound/AccountProxy.sol";
 import {IInteropAccount} from "./interfaces/IInteropAccount.sol";
 import {ERC6551AccountCreator} from "./extensions/ERC6551AccountCreator.sol";
 import {ERC721Drop} from "./tokens/ERC721Drop.sol";
-import {AccountItemConfiguration} from "./lib/AccountItem.sol";
+import {AccountItemConfiguration, InteropMainConfiguration} from "./lib/AccountItem.sol";
 import {AccountItemDelivery} from "./extensions/AccountItemDelivery.sol";
 
 contract InteropAccount is
@@ -17,18 +17,22 @@ contract InteropAccount is
     AccountItemDelivery
 {
     constructor(
+        InteropMainConfiguration memory mainConfiguration,
         AccountItemConfiguration[] memory deliverablesConfiguration,
         address registry,
         address accountProxy,
-        address implementation,
-        uint256 _maxSupply
+        address implementation
     )
-        ERC721Drop("InteropNFTMain", "INFTM", 0, _maxSupply)
+        ERC721Drop(
+            mainConfiguration.name,
+            mainConfiguration.symbol,
+            mainConfiguration.price,
+            mainConfiguration.maxSupply,
+            mainConfiguration.uri
+        )
         ERC6551AccountCreator(registry, accountProxy, implementation)
         AccountItemDelivery(deliverablesConfiguration)
-    {
-        maxSupply = _maxSupply;
-    }
+    {}
 
     /**
      * @notice Create a main account for the given recipient (via bound ERC721).
