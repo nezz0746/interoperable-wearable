@@ -3,12 +3,12 @@ import { Chain, createWalletClient, http, publicActions } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { polygonMumbai } from "viem/chains";
 
-const mumbaiApiKey = process.env.NEXT_PUBLIC_MUMBAI_ALCHEMY_KEY as string;
+const mumbaiApiKey = process.env.MUMBAI_ALCHEMY_KEY as string;
 
 if (!mumbaiApiKey) {
-  throw new Error("MUMBAI_RPC_URL is not set");
+  throw new Error("MUMBAI_ALCHEMY_KEY is not set");
 } else {
-  console.log("MUMBAI_RPC_URL: ", mumbaiApiKey);
+  console.log("MUMBAI_ALCHEMY_KEY: ", mumbaiApiKey);
 }
 
 const mumbaiRpcUrl = `https://eth-goerli.g.alchemy.com/v2/${mumbaiApiKey}`;
@@ -32,6 +32,11 @@ const rpcUrls: Record<number, string> = {
 const getClient = () => {
   const chain = chains[defaultChainId];
   const rpcUrlActual = rpcUrls[defaultChainId];
+
+  console.log("CLIENT: ", {
+    chain,
+    rpcUrlActual,
+  });
 
   return createWalletClient({
     account: privateKeyToAccount(account_key),
