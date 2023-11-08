@@ -30,18 +30,27 @@ const ConnectButton = () => {
                 userSelect: "none",
               },
             })}
+            className="font-main"
           >
             {(() => {
               if (!connected) {
                 return (
-                  <button onClick={openConnectModal} type="button">
+                  <button
+                    className="btn btn-outline rounded-none"
+                    onClick={openConnectModal}
+                    type="button"
+                  >
                     Connect Wallet
                   </button>
                 );
               }
               if (chain.unsupported) {
                 return (
-                  <button onClick={openChainModal} type="button">
+                  <button
+                    className="btn btn-outline rounded-none"
+                    onClick={openChainModal}
+                    type="button"
+                  >
                     Wrong network
                   </button>
                 );
@@ -50,7 +59,7 @@ const ConnectButton = () => {
                 <div style={{ display: "flex", gap: 12 }}>
                   <button
                     onClick={openChainModal}
-                    className="btn btn-outline"
+                    className="btn btn-outline rounded-none"
                     type="button"
                   >
                     {chain.hasIcon && (
@@ -78,7 +87,7 @@ const ConnectButton = () => {
                   <button
                     onClick={openAccountModal}
                     type="button"
-                    className="btn btn-outline"
+                    className="btn btn-outline rounded-none"
                   >
                     {account.displayName}
                     {account.displayBalance

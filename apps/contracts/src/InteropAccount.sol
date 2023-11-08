@@ -6,20 +6,33 @@ import {AccountProxy} from "tokenbound/AccountProxy.sol";
 
 import {IInteropAccount} from "./interfaces/IInteropAccount.sol";
 import {ERC6551AccountCreator} from "./extensions/ERC6551AccountCreator.sol";
-import {ERC721Drop} from "./lib/ERC721Drop.sol";
+import {ERC721Drop} from "./tokens/ERC721Drop.sol";
+import {AccountItemConfiguration, InteropMainConfiguration} from "./lib/AccountItem.sol";
+import {AccountItemDelivery} from "./extensions/AccountItemDelivery.sol";
 
-contract InteropAccount is IInteropAccount, ERC721Drop, ERC6551AccountCreator {
+contract InteropAccount is
+    IInteropAccount,
+    ERC721Drop,
+    ERC6551AccountCreator,
+    AccountItemDelivery
+{
     constructor(
+        InteropMainConfiguration memory mainConfiguration,
+        AccountItemConfiguration[] memory deliverablesConfiguration,
         address registry,
         address accountProxy,
-        address implementation,
-        uint256 _maxSupply
+        address implementation
     )
-        ERC721Drop("InteropNFTMain", "INFTM", 0, _maxSupply)
+        ERC721Drop(
+            mainConfiguration.name,
+            mainConfiguration.symbol,
+            mainConfiguration.price,
+            mainConfiguration.maxSupply,
+            mainConfiguration.uri
+        )
         ERC6551AccountCreator(registry, accountProxy, implementation)
-    {
-        maxSupply = _maxSupply;
-    }
+        AccountItemDelivery(deliverablesConfiguration)
+    {}
 
     /**
      * @notice Create a main account for the given recipient (via bound ERC721).
@@ -39,7 +52,10 @@ contract InteropAccount is IInteropAccount, ERC721Drop, ERC6551AccountCreator {
         _safeMint(recipient, 1);
 
         // Create account on root chain
-        _createAccount(block.chainid, address(this), tokenId);
+        address account = _createAccount(block.chainid, address(this), tokenId);
+
+        // Deliver items to account
+        _deliverItems(account);
 
         // Emit event for side chain to listen to and create account with the same chainId
         emit CreateMainAccount(block.chainid, address(this), tokenId);

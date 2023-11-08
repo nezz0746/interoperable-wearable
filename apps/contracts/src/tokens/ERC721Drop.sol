@@ -5,18 +5,24 @@ import {ERC721A} from "ERC721A/ERC721A.sol";
 import {Ownable} from "openzeppelin-contracts/contracts/access/Ownable.sol";
 
 contract ERC721Drop is ERC721A, Ownable {
+    string public dropURI;
+
     uint256 public immutable maxSupply;
 
     uint256 public price;
+
+    event SetPrice(uint256 price);
 
     constructor(
         string memory name,
         string memory symbol,
         uint256 _price,
-        uint256 _maxSupply
+        uint256 _maxSupply,
+        string memory _dropURI
     ) ERC721A(name, symbol) {
         price = _price;
         maxSupply = _maxSupply;
+        dropURI = _dropURI;
     }
 
     /**
@@ -32,6 +38,8 @@ contract ERC721Drop is ERC721A, Ownable {
      */
     function setPrice(uint256 _price) public onlyOwner {
         price = _price;
+
+        emit SetPrice(_price);
     }
 
     /**
@@ -64,5 +72,12 @@ contract ERC721Drop is ERC721A, Ownable {
      */
     function _startTokenId() internal pure override returns (uint256) {
         return 1;
+    }
+
+    /**
+     * @notice override the default implementation of tokenURI
+     */
+    function tokenURI(uint256) public view override returns (string memory) {
+        return dropURI;
     }
 }

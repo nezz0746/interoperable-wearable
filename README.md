@@ -22,6 +22,12 @@ Note: if neede here's how to [install foundry](https://getfoundry.sh/)
 
 ## Deploy Procedure
 
+Quick Look:
+- Deploy smart contracts & generate wagmi hooks by running: `deploy:testnets`
+- Push Code to deploy on vercel (or any provider), so that relay endpoint is up for the actions to be relayed. (Set enpoint base URI in Tenerly if not done)
+- Add InteropAccount contract address in Teenderly project (Could see if can add programatically)
+- Deploy actions by running: `deploy:actions:testnets`
+
 Steps to deploy the Interop NFT bound accounts
 
 ### 1. Deploy InteropAccount & InteropAccountRelay
@@ -65,10 +71,16 @@ Required Environment variables: check `apps/web/.env.example`
 ```bash
 NEXT_PUBLIC_TESTNET_CHAINS_ENABLED=true
 NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=
+
+NEXT_PUBLIC_MUMBAI_ALCHEMY_KEY=
+NEXT_PUBLIC_GOERLI_ALCHEMY_KEY=
+
 RELAYER_PRIVATE_KEY=
-MUMBAI_RPC_URL=
 ```
 
 Deploy nextjs app on vercel
 
 This scripts feeds the deployed artifact InteropAccountNFT's address into the .yaml config & deploy the action to tenderly. You need to install the tenderly-cli & run `tenderly login` first
+
+
+### 4. Assets & Metadata Needed
