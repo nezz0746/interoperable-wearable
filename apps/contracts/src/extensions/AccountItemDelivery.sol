@@ -20,4 +20,16 @@ contract AccountItemDelivery {
             deliverables[i].deliver(recipient);
         }
     }
+
+    function getItems() external view returns (ERC721AccountItem[] memory) {
+        return deliverables;
+    }
+
+    function getItemURIs() external view returns (string[] memory) {
+        string[] memory uris = new string[](deliverables.length);
+        for (uint256 i = 0; i < deliverables.length; i++) {
+            uris[i] = deliverables[i].tokenURI(0);
+        }
+        return uris;
+    }
 }
