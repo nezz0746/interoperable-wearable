@@ -65,7 +65,9 @@ contract AccountTest is DSTestFull {
     }
 
     function testRelayDeplyment() public {
-        ERC721AccountItem item = interopAccountRelay.deliverables(0);
+        (, address itemAddress) = interopAccountRelay.deliverables(0);
+
+        ERC721AccountItem item = ERC721AccountItem(itemAddress);
 
         assertEq(item.name(), "MockERC721");
         assertEq(item.symbol(), "MockERC721");
@@ -86,7 +88,9 @@ contract AccountTest is DSTestFull {
             1
         );
 
-        ERC721AccountItem item = interopAccountRelay.deliverables(0);
+        (, address itemAddress) = interopAccountRelay.deliverables(0);
+
+        ERC721AccountItem item = ERC721AccountItem(itemAddress);
 
         assertEq(item.name(), "MockERC721");
 

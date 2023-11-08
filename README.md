@@ -66,6 +66,7 @@ yarn run deploy:actions:testnet
 
 ⚠️ Required Environment variables: 
 - in tenderly "Storage" (though the dashboard UI): `apiBaseURL` which is the url of the deployed nextjs app.
+<img src="TenderlyStorage.png">
 - Add InteropAccountRelay as Contract in your tenderly project
 
 ### 3. Deploy frontend
