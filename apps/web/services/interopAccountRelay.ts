@@ -19,6 +19,16 @@ export const createAccountOnSidechain = async ({
 
   const accountAccountRelayAddress = interopAccountRelayAddress[defaultChainId];
 
+  console.log("ARGS: ", {
+    args: [interopNftChainId, tokenContract, tokenId],
+    chain: client.chain,
+    account: client.account,
+    abi: interopAccountRelayABI,
+    functionName: "createAccount",
+    address: accountAccountRelayAddress,
+    type: "eip1559",
+  });
+
   const { request } = await client.simulateContract({
     args: [interopNftChainId, tokenContract, tokenId],
     chain: client.chain,
