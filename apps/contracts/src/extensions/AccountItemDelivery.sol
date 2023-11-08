@@ -25,6 +25,14 @@ contract AccountItemDelivery {
         }
     }
 
+    function _deliverItems(address recipient) internal {
+        for (uint256 i = 0; i < deliverables.length; i++) {
+            ERC721AccountItem(deliverables[i].contractAddress).deliver(
+                recipient
+            );
+        }
+    }
+
     function getItems() external view returns (Deliverable[] memory) {
         return deliverables;
     }
