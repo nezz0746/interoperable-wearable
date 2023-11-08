@@ -12,3 +12,13 @@ export const testnetChainEnabled =
 
 export const mainnetChainEnabled =
   process.env.NEXT_PUBLIC_MAINNET_CHAINS_ENABLED === "true";
+
+export const mumbaiApiKey = process.env
+  .NEXT_PUBLIC_MUMBAI_ALCHEMY_KEY as string;
+
+export const goerliApiKey = process.env
+  .NEXT_PUBLIC_GOERLI_ALCHEMY_KEY as string;
+
+if (!mumbaiApiKey || !goerliApiKey) {
+  throw new Error("Missing Alchemy API key");
+}
