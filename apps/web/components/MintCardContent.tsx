@@ -112,7 +112,7 @@ const Progress = ({ ratio, totalSupply, maxSupply }: ProgressProps) => {
           {totalSupply}/{maxSupply}
         </p>
       </div>
-      <div className="relative w-full h-2 bg-black">
+      <div className="relative w-full h-2 border border-black">
         <div
           className="absolute top-0 left-0 h-2 bg-green-500"
           style={{ width: `${ratio}%` }}
