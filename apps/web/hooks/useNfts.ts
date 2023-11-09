@@ -4,14 +4,16 @@ import { Address } from "viem";
 import { useWalletClient } from "wagmi";
 import { TokenboundClient } from "@tokenbound/sdk";
 import { NftWithAccount, useNftsStore } from "./useNftsStore";
+import useChain from "./useChain";
+import useAppAddresses from "./useAppAddresses";
 
 type UseNFTProps = {
-  tokenContract: Address;
   address: Address;
-  chainId: number;
 };
 
-const useNfts = ({ tokenContract, address, chainId }: UseNFTProps) => {
+const useNfts = ({ address }: UseNFTProps) => {
+  const { mainChainId: chainId } = useChain();
+  const { accountContractAddress } = useAppAddresses();
   const { data: walletClient } = useWalletClient({ chainId });
   const {
     nftsWithAccount,
@@ -27,7 +29,7 @@ const useNfts = ({ tokenContract, address, chainId }: UseNFTProps) => {
     if (!nft[chainId] || !walletClient) return;
 
     const data = await nft[chainId].getMintedNfts(address, {
-      contractAddresses: [tokenContract],
+      contractAddresses: [accountContractAddress],
     });
 
     if (data.nfts) {
@@ -39,7 +41,7 @@ const useNfts = ({ tokenContract, address, chainId }: UseNFTProps) => {
 
       const nfts = data.nfts.map((nft) => {
         const account = tokenbountClient.getAccount({
-          tokenContract,
+          tokenContract: accountContractAddress,
           tokenId: nft.tokenId,
         });
 
@@ -64,7 +66,7 @@ const useNfts = ({ tokenContract, address, chainId }: UseNFTProps) => {
     }
   }, [
     walletClient,
-    tokenContract,
+    accountContractAddress,
     address,
     chainId,
     pendingNftsWithAccount,

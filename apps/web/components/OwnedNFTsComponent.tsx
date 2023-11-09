@@ -1,15 +1,9 @@
 import useNfts from "hooks/useNfts";
 import { truncateAddress } from "utils";
 import { Address } from "viem";
-import { interopAccountAddress as interopAccountAddressImported } from "wagmi-config/generated";
 import Title from "./Title";
-import useChain from "hooks/useChain";
 import { useAccount } from "wagmi";
-
-const interopAccountAddress = interopAccountAddressImported as Record<
-  number,
-  Address
->;
+import { useAccountNftStore } from "hooks/useAccountNft";
 
 const squareSrc = "https://placehold.co/400x400";
 
@@ -30,11 +24,9 @@ type OwnedNFTListProps = {
 };
 
 const OwnedNFTList = ({ address }: OwnedNFTListProps) => {
-  const { chainId } = useChain();
+  const { metadata } = useAccountNftStore();
   const { nftsWithAccount, pendingNftsWithAccount } = useNfts({
-    tokenContract: interopAccountAddress[chainId],
     address,
-    chainId,
   });
 
   return (
@@ -45,14 +37,12 @@ const OwnedNFTList = ({ address }: OwnedNFTListProps) => {
             key={nft.account}
             className=" border border-black h-[60px] flex flex-row gap-2"
           >
-            <img src={squareSrc} className="h-full" />
+            <img src={metadata?.image} className="h-full" />
             <div className="flex flex-col">
               <p className="font-main font-bold">
                 Interoperable Wearable Account #{nft.tokenId}
               </p>
-              <p className="text-sm font-main font-light">
-                {truncateAddress(nft.account, 10)}
-              </p>
+              <p className="text-sm font-main font-light">{nft.account}</p>
             </div>
           </div>
         );

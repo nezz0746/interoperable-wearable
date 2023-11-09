@@ -24,6 +24,7 @@
     "viem": "^1.18.3",
     "wagmi": "1.4.5",
     "wagmi-config": "*",
+    "items-metadata": "*",
     "zustand": "^4.4.6"
   },
   "devDependencies": {

@@ -2,7 +2,6 @@ import classNames from "classnames";
 import { Address, formatEther } from "viem";
 import { useAccount, useContractWrite, useWaitForTransaction } from "wagmi";
 import {
-  interopAccountAddress,
   useInteropAccountName,
   useInteropAccountPrice,
   usePrepareInteropAccountCreateMainAccount,
@@ -14,16 +13,24 @@ import { useNftsStore } from "hooks/useNftsStore";
 import { truncateAddress } from "utils";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import useAppAddresses from "hooks/useAppAddresses";
 
 const MintCardContent = () => {
-  const { unsupportedChain, chainId, blockExplorer } = useChain();
+  const { accountContractAddress } = useAppAddresses();
+  const { unsupportedChain, blockExplorer, currentChainId, mainChainId } =
+    useChain();
+
+  const mintFunctionsDisabled =
+    currentChainId !== mainChainId || unsupportedChain;
 
   const { data: price } = useInteropAccountPrice({
-    enabled: !unsupportedChain,
+    enabled: !mintFunctionsDisabled,
+    chainId: mainChainId,
   });
 
   const { data: name } = useInteropAccountName({
-    enabled: !unsupportedChain,
+    enabled: !mintFunctionsDisabled,
+    chainId: mainChainId,
   });
 
   const { address } = useAccount();
@@ -38,16 +45,10 @@ const MintCardContent = () => {
             {blockExplorer && (
               <Link
                 target="_blank"
-                href={`${blockExplorer}/address/${
-                  // @ts-ignore
-                  interopAccountAddress[chainId] ?? ""
-                }`}
+                href={`${blockExplorer}/address/${accountContractAddress}`}
                 className="flex flex-row items-center border border-black px-2 hover:bg-slate-200 hover:cursor-pointer"
               >
-                <p>
-                  {/* @ts-ignore */}
-                  {truncateAddress(interopAccountAddress[chainId], 6)}
-                </p>
+                <p>{truncateAddress(accountContractAddress, 6)}</p>
                 <ArrowTopRightOnSquareIcon className="w-4 h-4 ml-1" />
               </Link>
             )}
@@ -58,7 +59,7 @@ const MintCardContent = () => {
           </div>
           {address && price ? (
             <MintButton
-              unsupportedChain={unsupportedChain}
+              enabled={!mintFunctionsDisabled}
               address={address}
               price={price}
             />
@@ -73,15 +74,15 @@ const MintCardContent = () => {
 type MintButtonProps = {
   address: Address;
   price: bigint;
-  unsupportedChain: boolean;
+  enabled?: boolean;
 };
 
-const MintButton = ({ address, price, unsupportedChain }: MintButtonProps) => {
+const MintButton = ({ address, price, enabled }: MintButtonProps) => {
   const addPendingNFT = useNftsStore((state) => state.addPendingNFT);
   const { config, isError } = usePrepareInteropAccountCreateMainAccount({
     args: [address],
     value: price,
-    enabled: !unsupportedChain,
+    enabled,
   });
 
   const {
@@ -98,7 +99,7 @@ const MintButton = ({ address, price, unsupportedChain }: MintButtonProps) => {
   const { isLoading: transactionLoading } = useWaitForTransaction(data);
 
   const loading = pendingConfirmation || transactionLoading;
-  const disabled = loading || isError || unsupportedChain;
+  const disabled = loading || isError || enabled === false;
 
   const onClick = () => {
     write && write();
