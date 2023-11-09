@@ -38,11 +38,11 @@ contract DeployIWS is BaseScript {
     ) internal setEnvDeploy(Cycle.Testnet) broadcastOn(targetChains) {
         InteropMainConfiguration
             memory mainConfiguration = InteropMainConfiguration(
-                "Interoperable Wearable Main Item",
-                "IWS",
-                "ipfs://bafkreihojjqpj3flh3buv6xfxbq5krnlbaoa4q2dj2muifylyzoa34olyi",
-                500,
-                0.1 ether
+                "Gaian Wearable Pack",
+                "GWP",
+                "ipfs://bafkreifukc4gawybgl4736ltkwwoqoaxcl77r45yyf56u2qxu6xodutw2y",
+                200,
+                0.05 ether
             );
 
         AccountItemConfiguration[]
@@ -51,9 +51,9 @@ contract DeployIWS is BaseScript {
             );
 
         deliverablesConfiguration[0] = AccountItemConfiguration(
-            "Interoperable Wearable Item",
-            "IWI",
-            "ipfs://bafkreif4ytood4qzd6ltlbc5u7j6abpp42cui5w2wmhasno3pkvzugtssm"
+            "Gaian Wearable - Carbon Black",
+            "GWCB",
+            "ipfs://bafkreic7ffaebtguduxnajwhrlkw3imxk4pcx7jj4gs6jkotqugp7trc7e"
         );
 
         InteropAccount interopNFT = new InteropAccount(
@@ -63,8 +63,6 @@ contract DeployIWS is BaseScript {
             accountProxy,
             accountImplementation
         );
-
-        interopNFT.setPrice(0.1 ether);
 
         _saveImplementations(address(interopNFT), "InteropAccount");
     }
@@ -78,14 +76,14 @@ contract DeployIWS is BaseScript {
             );
 
         deliverablesConfiguration[0] = AccountItemConfiguration(
-            "Interoperable Wearable Item",
-            "IWI",
-            "ipfs://bafkreia2gzeuzmyzzdcztnaccmc2kbc7ny535jvevk6op2rfrqdp7z5zsy"
+            "Gaian Wearable - Liquid Magma",
+            "GWLM",
+            "ipfs://bafkreibyu5ite5igoy4g6lwtplfdwbh46bxe3dfr4qfx3uxy65b6psorn4"
         );
         deliverablesConfiguration[1] = AccountItemConfiguration(
-            "Interoperable Wearable Item",
-            "IWI",
-            "ipfs://bafkreiabfd3hm7fjjwmfvyh7pt6ymrtgyyds7y57gtjeyvsc43ku77pnke"
+            "Gaian Wearable - Lunar White",
+            "GWLW",
+            "ipfs://bafkreigv3vom74k3zapgmc7ishl5tq52xyd7dth7bhdkqbqdvecsabosda"
         );
 
         InteropAccountRelay interopRelay = new InteropAccountRelay(

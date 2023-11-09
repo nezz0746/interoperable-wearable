@@ -12,8 +12,6 @@ import useAccountNft from "hooks/useAccountNft";
 import { truncateAddress } from "utils";
 import useChain from "hooks/useChain";
 
-const squareSrc = "https://placehold.co/400x400";
-
 const Home: NextPage = () => {
   const { itemsMetadata } = useAccountItems();
   const { metadata } = useAccountNft();
@@ -41,7 +39,7 @@ const Home: NextPage = () => {
               </div>
               <div className="p-4">
                 <div className="border-b-2 pb-2 mb-4 flex flex-row justify-between">
-                  <Title text="Interoperable Wearable Account" />
+                  <Title text={metadata?.name ?? ""} />
                   <div className="flex flex-row gap-1">
                     <img {...ethereumIcon} />
                     <img {...polygonIcon} />

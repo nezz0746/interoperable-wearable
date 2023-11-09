@@ -24,6 +24,10 @@ contract ERC721AccountItem is ERC721A, Ownable {
         _safeMint(to, 1, "");
     }
 
+    function setUri(string memory uri) external onlyOwner {
+        itemURI = uri;
+    }
+
     function tokenURI(uint256) public view override returns (string memory) {
         return itemURI;
     }

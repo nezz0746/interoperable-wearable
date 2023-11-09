@@ -2,8 +2,10 @@ import classNames from "classnames";
 import { Address, formatEther } from "viem";
 import { useAccount, useContractWrite, useWaitForTransaction } from "wagmi";
 import {
+  useInteropAccountMaxSupply,
   useInteropAccountName,
   useInteropAccountPrice,
+  useInteropAccountTotalSupply,
   usePrepareInteropAccountCreateMainAccount,
 } from "wagmi-config/generated";
 import Title from "./Title";
@@ -14,8 +16,10 @@ import { truncateAddress } from "utils";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import useAppAddresses from "hooks/useAppAddresses";
+import { useMemo } from "react";
 
 const MintCardContent = () => {
+  const { address } = useAccount();
   const { accountContractAddress } = useAppAddresses();
   const { unsupportedChain, blockExplorer, currentChainId, mainChainId } =
     useChain();
@@ -33,29 +37,51 @@ const MintCardContent = () => {
     chainId: mainChainId,
   });
 
-  const { address } = useAccount();
+  const { data: totalSupply } = useInteropAccountTotalSupply({
+    enabled: !mintFunctionsDisabled,
+    chainId: mainChainId,
+  });
+
+  const { data: maxSupply } = useInteropAccountMaxSupply({
+    enabled: !mintFunctionsDisabled,
+    chainId: mainChainId,
+  });
+
+  const progressStats = useMemo(() => {
+    if (totalSupply === undefined || maxSupply === undefined)
+      return { ratio: 0 };
+
+    return {
+      ratio: (Number(totalSupply) / Number(maxSupply)) * 100,
+      totalSupply: Number(totalSupply),
+      maxSupply: Number(maxSupply),
+    };
+  }, [totalSupply, maxSupply]);
 
   return (
     <>
       <div className=" border border-black max-h-[400px] flex flex-col p-4">
         <div className="flex flex-col gap-2">
           <Title text="Mint" />
-          <div className="flex flex-row w-full font-main justify-between">
-            <p>{name} </p>
-            {blockExplorer && (
-              <Link
-                target="_blank"
-                href={`${blockExplorer}/address/${accountContractAddress}`}
-                className="flex flex-row items-center border border-black px-2 hover:bg-slate-200 hover:cursor-pointer"
-              >
-                <p>{truncateAddress(accountContractAddress, 6)}</p>
-                <ArrowTopRightOnSquareIcon className="w-4 h-4 ml-1" />
-              </Link>
-            )}
-          </div>
-          <div className="flex flex-row w-full font-main justify-between">
-            <p>Price</p>
-            <p>{price ? formatEther(price) : "--"} ETH</p>
+          <div className="flex flex-col my-2 gap-1">
+            <div className="flex flex-row w-full font-main justify-between">
+              <p>{name} </p>
+              {blockExplorer && (
+                <Link
+                  target="_blank"
+                  href={`${blockExplorer}/address/${accountContractAddress}`}
+                  className="flex flex-row items-center border border-black px-2 hover:bg-slate-200 hover:cursor-pointer"
+                >
+                  <p>{truncateAddress(accountContractAddress, 6)}</p>
+                  <ArrowTopRightOnSquareIcon className="w-4 h-4 ml-1" />
+                </Link>
+              )}
+            </div>
+            <div className="flex flex-row w-full font-main justify-between">
+              <p>Price</p>
+              <p>{price ? formatEther(price) : "--"} ETH</p>
+            </div>
+            {progressStats && <Progress {...progressStats} />}
           </div>
           {address && price ? (
             <MintButton
@@ -68,6 +94,31 @@ const MintCardContent = () => {
       </div>
       <OwnedNFTsComponent />
     </>
+  );
+};
+
+type ProgressProps = {
+  ratio: number;
+  totalSupply?: number;
+  maxSupply?: number;
+};
+
+const Progress = ({ ratio, totalSupply, maxSupply }: ProgressProps) => {
+  return (
+    <div className="flex flex-col w-full">
+      <div className="flex flex-row justify-between font-main">
+        <p>Minted</p>
+        <p>
+          {totalSupply}/{maxSupply}
+        </p>
+      </div>
+      <div className="relative w-full h-2 border border-black">
+        <div
+          className="absolute top-0 left-0 h-2 bg-green-500"
+          style={{ width: `${ratio}%` }}
+        />
+      </div>
+    </div>
   );
 };
 
