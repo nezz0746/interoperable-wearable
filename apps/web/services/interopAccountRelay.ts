@@ -10,6 +10,11 @@ type AccountCreationArgs = {
   tokenId: bigint;
 };
 
+const gasSnapshot = {
+  delivery: 85000,
+  accountCreation: 130000,
+};
+
 export const createAccountOnSidechain = async ({
   chainId: interopNftChainId,
   tokenContract,
@@ -19,15 +24,21 @@ export const createAccountOnSidechain = async ({
 
   const accountAccountRelayAddress = interopAccountRelayAddress[defaultChainId];
 
-  console.log("ARGS: ", {
-    args: [interopNftChainId, tokenContract, tokenId],
-    chain: client.chain,
-    account: client.account,
-    abi: interopAccountRelayABI,
-    functionName: "createAccount",
-    address: accountAccountRelayAddress,
-    type: "eip1559",
-  });
+  const numberOfDeliverables = (
+    await client.readContract({
+      abi: interopAccountRelayABI,
+      address: accountAccountRelayAddress,
+      functionName: "getItems",
+    })
+  ).length;
+
+  let gas = BigInt(
+    (
+      (gasSnapshot.delivery * numberOfDeliverables +
+        gasSnapshot.accountCreation) *
+      1.2
+    ).toFixed(0)
+  );
 
   const { request } = await client.simulateContract({
     args: [interopNftChainId, tokenContract, tokenId],
@@ -36,8 +47,11 @@ export const createAccountOnSidechain = async ({
     abi: interopAccountRelayABI,
     functionName: "createAccount",
     address: accountAccountRelayAddress,
+    gas,
     type: "eip1559",
   });
+
+  console.log("REQUEST: ", request);
 
   return await client.writeContract(request);
 };
