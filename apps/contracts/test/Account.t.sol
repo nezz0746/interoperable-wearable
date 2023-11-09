@@ -12,7 +12,8 @@ import {Create2} from "openzeppelin-contracts/contracts/utils/Create2.sol";
 import {Multicall3} from "multicall-authenticated/Multicall3.sol";
 
 import {InteropAccountRelay} from "../src/InteropAccountRelay.sol";
-import {AccountItemConfiguration} from "../src/lib/AccountItem.sol";
+import {InteropAccount} from "../src/InteropAccount.sol";
+import {AccountItemConfiguration, InteropMainConfiguration} from "../src/lib/AccountItem.sol";
 import {ERC721AccountItem} from "../src/tokens/ERC721AccountItem.sol";
 import {AccountItemDelivery} from "../src/extensions/AccountItemDelivery.sol";
 import {ERC6551AccountCreator} from "../src/extensions/ERC6551AccountCreator.sol";
@@ -48,6 +49,8 @@ contract MockAccountCreator is ERC6551AccountCreator {
 }
 
 contract AccountTest is BaseAccount {
+    InteropAccount interopAccount;
+    address deployer = label("deployer");
     InteropAccountRelay interopAccountRelay;
     uint256 goerliForkId = vm.createFork("goerli");
     uint256 mumbaiForkId = vm.createFork("mumbai");
@@ -73,6 +76,7 @@ contract AccountTest is BaseAccount {
         );
 
         vm.selectFork(mumbaiForkId);
+        vm.prank(deployer);
         interopAccountRelay = new InteropAccountRelay(
             itemConfiguration,
             address(registry),
@@ -80,6 +84,16 @@ contract AccountTest is BaseAccount {
             address(implementation)
         );
         vm.makePersistent(address(interopAccountRelay));
+    }
+
+    function testOnlyDeployerCanSetUriOnInteropAccountRelay() public {
+        vm.selectFork(mumbaiForkId);
+        vm.prank(label("user"));
+        vm.expectRevert("Ownable: caller is not the owner");
+        interopAccountRelay.setUri(0, "https://example.com/{id}.json");
+
+        vm.prank(deployer);
+        interopAccountRelay.setUri(0, "https://example.com/{id}.json");
     }
 
     function testRelayDeplyment() public {
@@ -136,6 +150,46 @@ contract AccountTest is BaseAccount {
             ),
             0
         );
+    }
+}
+
+contract InteropAccountTest is BaseAccount {
+    InteropAccount interopAccount;
+    address deployer = label("deployer");
+
+    function setUp() public {
+        AccountItemConfiguration[]
+            memory itemConfiguration = new AccountItemConfiguration[](1);
+
+        itemConfiguration[0] = AccountItemConfiguration(
+            "MockERC721",
+            "MockERC721",
+            "https://example.com/{id}.json"
+        );
+
+        vm.prank(deployer);
+        interopAccount = new InteropAccount(
+            InteropMainConfiguration({
+                name: "MockERC721",
+                symbol: "MockERC721",
+                uri: "https://example.com/{id}.json",
+                maxSupply: 100,
+                price: 0.1 ether
+            }),
+            itemConfiguration,
+            address(registry),
+            address(accountProxy),
+            address(implementation)
+        );
+    }
+
+    function testOnlyOwnerCanSetUri() public {
+        vm.prank(label("user"));
+        vm.expectRevert("Ownable: caller is not the owner");
+        interopAccount.setUri("https://example.com/{id}.json");
+
+        vm.prank(deployer);
+        interopAccount.setUri("https://example.com/{id}.json");
     }
 }
 

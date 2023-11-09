@@ -43,6 +43,13 @@ contract ERC721Drop is ERC721A, Ownable {
     }
 
     /**
+     * @notice Allows the owner to set the drop URI.
+     */
+    function setUri(string memory _dropURI) public onlyOwner {
+        dropURI = _dropURI;
+    }
+
+    /**
      * @notice Allows the owner to withdraw the contract's Ether balance.
      */
     function withdraw() external onlyOwner {
