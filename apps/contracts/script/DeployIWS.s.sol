@@ -53,7 +53,7 @@ contract DeployIWS is BaseScript {
         deliverablesConfiguration[0] = AccountItemConfiguration(
             "Gaian Wearable - Carbon Black",
             "GWCB",
-            "ipfs://bafkreicccfawsyoaxfkdaews5b4rlra7ivktnstbmrtowbthc2ewcg546e"
+            "ipfs://bafkreic7ffaebtguduxnajwhrlkw3imxk4pcx7jj4gs6jkotqugp7trc7e"
         );
 
         InteropAccount interopNFT = new InteropAccount(
@@ -78,12 +78,12 @@ contract DeployIWS is BaseScript {
         deliverablesConfiguration[0] = AccountItemConfiguration(
             "Gaian Wearable - Liquid Magma",
             "GWLM",
-            "ipfs://bafkreieeahw2wicgul6t2gvgcsc4fottaeikhmw2zi73ipfvn7mlf3dbzy"
+            "ipfs://bafkreibyu5ite5igoy4g6lwtplfdwbh46bxe3dfr4qfx3uxy65b6psorn4"
         );
         deliverablesConfiguration[1] = AccountItemConfiguration(
             "Gaian Wearable - Lunar White",
             "GWLW",
-            "ipfs://bafkreieedy4laughaf3ebddmbad5bdjlryuw4jzcrj5ap726xw2cocqxo4"
+            "ipfs://bafkreigv3vom74k3zapgmc7ishl5tq52xyd7dth7bhdkqbqdvecsabosda"
         );
 
         InteropAccountRelay interopRelay = new InteropAccountRelay(

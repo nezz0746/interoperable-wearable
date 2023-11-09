@@ -251,7 +251,7 @@ export const ierc6551RegistryABI = [
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export const interopAccountABI = [
   {
@@ -596,6 +596,23 @@ export const interopAccountABI = [
     outputs: [],
   },
   {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: 'index', internalType: 'uint256', type: 'uint256' },
+      { name: 'newUri', internalType: 'string', type: 'string' },
+    ],
+    name: 'setUri',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: '_dropURI', internalType: 'string', type: 'string' }],
+    name: 'setUri',
+    outputs: [],
+  },
+  {
     stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'interfaceId', internalType: 'bytes4', type: 'bytes4' }],
@@ -651,14 +668,14 @@ export const interopAccountABI = [
 ] as const
 
 /**
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export const interopAccountAddress = {
-  5: '0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7',
+  5: '0xc2eFb534a929526E7196a3d4E7e29d40F47039bD',
 } as const
 
 /**
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export const interopAccountConfig = {
   address: interopAccountAddress,
@@ -1003,7 +1020,7 @@ export const interopAccountNftABI = [
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x17BC927424230E1b1DE18E5b295A00CCBd636c4F)
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x4bBD0CDD229114E9dBbf9e1855eb32dC7a7fAFA7)
  */
 export const interopAccountRelayABI = [
   {
@@ -1037,6 +1054,25 @@ export const interopAccountRelayABI = [
       },
     ],
     name: 'CreateSideAccount',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'previousOwner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'newOwner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'OwnershipTransferred',
   },
   {
     stateMutability: 'nonpayable',
@@ -1076,17 +1112,48 @@ export const interopAccountRelayABI = [
       },
     ],
   },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'owner',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [],
+    name: 'renounceOwnership',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: 'index', internalType: 'uint256', type: 'uint256' },
+      { name: 'newUri', internalType: 'string', type: 'string' },
+    ],
+    name: 'setUri',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: 'newOwner', internalType: 'address', type: 'address' }],
+    name: 'transferOwnership',
+    outputs: [],
+  },
 ] as const
 
 /**
- * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x17BC927424230E1b1DE18E5b295A00CCBd636c4F)
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x4bBD0CDD229114E9dBbf9e1855eb32dC7a7fAFA7)
  */
 export const interopAccountRelayAddress = {
-  80001: '0x17BC927424230E1b1DE18E5b295A00CCBd636c4F',
+  80001: '0x4bBD0CDD229114E9dBbf9e1855eb32dC7a7fAFA7',
 } as const
 
 /**
- * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x17BC927424230E1b1DE18E5b295A00CCBd636c4F)
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x4bBD0CDD229114E9dBbf9e1855eb32dC7a7fAFA7)
  */
 export const interopAccountRelayConfig = {
   address: interopAccountRelayAddress,
@@ -1611,7 +1678,7 @@ export function useIerc6551RegistryErc6551AccountCreatedEvent(
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountABI}__.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountRead<
   TFunctionName extends string,
@@ -1636,7 +1703,7 @@ export function useInteropAccountRead<
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"balanceOf"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountBalanceOf<
   TFunctionName extends 'balanceOf',
@@ -1662,7 +1729,7 @@ export function useInteropAccountBalanceOf<
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"deliverables"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountDeliverables<
   TFunctionName extends 'deliverables',
@@ -1688,7 +1755,7 @@ export function useInteropAccountDeliverables<
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"dropURI"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountDropUri<
   TFunctionName extends 'dropURI',
@@ -1714,7 +1781,7 @@ export function useInteropAccountDropUri<
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"getApproved"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountGetApproved<
   TFunctionName extends 'getApproved',
@@ -1740,7 +1807,7 @@ export function useInteropAccountGetApproved<
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"getItems"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountGetItems<
   TFunctionName extends 'getItems',
@@ -1766,7 +1833,7 @@ export function useInteropAccountGetItems<
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"isApprovedForAll"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountIsApprovedForAll<
   TFunctionName extends 'isApprovedForAll',
@@ -1792,7 +1859,7 @@ export function useInteropAccountIsApprovedForAll<
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"maxSupply"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountMaxSupply<
   TFunctionName extends 'maxSupply',
@@ -1818,7 +1885,7 @@ export function useInteropAccountMaxSupply<
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"name"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountName<
   TFunctionName extends 'name',
@@ -1844,7 +1911,7 @@ export function useInteropAccountName<
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"owner"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountOwner<
   TFunctionName extends 'owner',
@@ -1870,7 +1937,7 @@ export function useInteropAccountOwner<
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"ownerOf"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountOwnerOf<
   TFunctionName extends 'ownerOf',
@@ -1896,7 +1963,7 @@ export function useInteropAccountOwnerOf<
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"price"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountPrice<
   TFunctionName extends 'price',
@@ -1922,7 +1989,7 @@ export function useInteropAccountPrice<
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"supportsInterface"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountSupportsInterface<
   TFunctionName extends 'supportsInterface',
@@ -1948,7 +2015,7 @@ export function useInteropAccountSupportsInterface<
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"symbol"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountSymbol<
   TFunctionName extends 'symbol',
@@ -1974,7 +2041,7 @@ export function useInteropAccountSymbol<
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"tokenURI"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountTokenUri<
   TFunctionName extends 'tokenURI',
@@ -2000,7 +2067,7 @@ export function useInteropAccountTokenUri<
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"totalSupply"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountTotalSupply<
   TFunctionName extends 'totalSupply',
@@ -2026,7 +2093,7 @@ export function useInteropAccountTotalSupply<
 /**
  * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountABI}__.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountWrite<
   TFunctionName extends string,
@@ -2058,7 +2125,7 @@ export function useInteropAccountWrite<
 /**
  * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"approve"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountApprove<
   TMode extends WriteContractMode = undefined,
@@ -2091,7 +2158,7 @@ export function useInteropAccountApprove<
 /**
  * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"createMainAccount"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountCreateMainAccount<
   TMode extends WriteContractMode = undefined,
@@ -2134,7 +2201,7 @@ export function useInteropAccountCreateMainAccount<
 /**
  * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"renounceOwnership"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountRenounceOwnership<
   TMode extends WriteContractMode = undefined,
@@ -2177,7 +2244,7 @@ export function useInteropAccountRenounceOwnership<
 /**
  * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"safeTransferFrom"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountSafeTransferFrom<
   TMode extends WriteContractMode = undefined,
@@ -2218,7 +2285,7 @@ export function useInteropAccountSafeTransferFrom<
 /**
  * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"setApprovalForAll"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountSetApprovalForAll<
   TMode extends WriteContractMode = undefined,
@@ -2261,7 +2328,7 @@ export function useInteropAccountSetApprovalForAll<
 /**
  * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"setPrice"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountSetPrice<
   TMode extends WriteContractMode = undefined,
@@ -2292,9 +2359,42 @@ export function useInteropAccountSetPrice<
 }
 
 /**
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"setUri"`.
+ *
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
+ */
+export function useInteropAccountSetUri<
+  TMode extends WriteContractMode = undefined,
+  TChainId extends number = keyof typeof interopAccountAddress,
+>(
+  config: TMode extends 'prepared'
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof interopAccountABI,
+          'setUri'
+        >['request']['abi'],
+        'setUri',
+        TMode
+      > & { address?: Address; chainId?: TChainId; functionName?: 'setUri' }
+    : UseContractWriteConfig<typeof interopAccountABI, 'setUri', TMode> & {
+        abi?: never
+        address?: never
+        chainId?: TChainId
+        functionName?: 'setUri'
+      } = {} as any,
+) {
+  return useContractWrite<typeof interopAccountABI, 'setUri', TMode>({
+    abi: interopAccountABI,
+    address: interopAccountAddress[5],
+    functionName: 'setUri',
+    ...config,
+  } as any)
+}
+
+/**
  * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"transferFrom"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountTransferFrom<
   TMode extends WriteContractMode = undefined,
@@ -2335,7 +2435,7 @@ export function useInteropAccountTransferFrom<
 /**
  * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"transferOwnership"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountTransferOwnership<
   TMode extends WriteContractMode = undefined,
@@ -2378,7 +2478,7 @@ export function useInteropAccountTransferOwnership<
 /**
  * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"withdraw"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountWithdraw<
   TMode extends WriteContractMode = undefined,
@@ -2411,7 +2511,7 @@ export function useInteropAccountWithdraw<
 /**
  * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountABI}__.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function usePrepareInteropAccountWrite<TFunctionName extends string>(
   config: Omit<
@@ -2429,7 +2529,7 @@ export function usePrepareInteropAccountWrite<TFunctionName extends string>(
 /**
  * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"approve"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function usePrepareInteropAccountApprove(
   config: Omit<
@@ -2448,7 +2548,7 @@ export function usePrepareInteropAccountApprove(
 /**
  * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"createMainAccount"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function usePrepareInteropAccountCreateMainAccount(
   config: Omit<
@@ -2473,7 +2573,7 @@ export function usePrepareInteropAccountCreateMainAccount(
 /**
  * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"renounceOwnership"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function usePrepareInteropAccountRenounceOwnership(
   config: Omit<
@@ -2498,7 +2598,7 @@ export function usePrepareInteropAccountRenounceOwnership(
 /**
  * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"safeTransferFrom"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function usePrepareInteropAccountSafeTransferFrom(
   config: Omit<
@@ -2520,7 +2620,7 @@ export function usePrepareInteropAccountSafeTransferFrom(
 /**
  * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"setApprovalForAll"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function usePrepareInteropAccountSetApprovalForAll(
   config: Omit<
@@ -2545,7 +2645,7 @@ export function usePrepareInteropAccountSetApprovalForAll(
 /**
  * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"setPrice"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function usePrepareInteropAccountSetPrice(
   config: Omit<
@@ -2562,9 +2662,28 @@ export function usePrepareInteropAccountSetPrice(
 }
 
 /**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"setUri"`.
+ *
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
+ */
+export function usePrepareInteropAccountSetUri(
+  config: Omit<
+    UsePrepareContractWriteConfig<typeof interopAccountABI, 'setUri'>,
+    'abi' | 'address' | 'functionName'
+  > & { chainId?: keyof typeof interopAccountAddress } = {} as any,
+) {
+  return usePrepareContractWrite({
+    abi: interopAccountABI,
+    address: interopAccountAddress[5],
+    functionName: 'setUri',
+    ...config,
+  } as UsePrepareContractWriteConfig<typeof interopAccountABI, 'setUri'>)
+}
+
+/**
  * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"transferFrom"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function usePrepareInteropAccountTransferFrom(
   config: Omit<
@@ -2583,7 +2702,7 @@ export function usePrepareInteropAccountTransferFrom(
 /**
  * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"transferOwnership"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function usePrepareInteropAccountTransferOwnership(
   config: Omit<
@@ -2608,7 +2727,7 @@ export function usePrepareInteropAccountTransferOwnership(
 /**
  * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountABI}__ and `functionName` set to `"withdraw"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function usePrepareInteropAccountWithdraw(
   config: Omit<
@@ -2627,7 +2746,7 @@ export function usePrepareInteropAccountWithdraw(
 /**
  * Wraps __{@link useContractEvent}__ with `abi` set to __{@link interopAccountABI}__.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountEvent<TEventName extends string>(
   config: Omit<
@@ -2645,7 +2764,7 @@ export function useInteropAccountEvent<TEventName extends string>(
 /**
  * Wraps __{@link useContractEvent}__ with `abi` set to __{@link interopAccountABI}__ and `eventName` set to `"Approval"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountApprovalEvent(
   config: Omit<
@@ -2664,7 +2783,7 @@ export function useInteropAccountApprovalEvent(
 /**
  * Wraps __{@link useContractEvent}__ with `abi` set to __{@link interopAccountABI}__ and `eventName` set to `"ApprovalForAll"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountApprovalForAllEvent(
   config: Omit<
@@ -2683,7 +2802,7 @@ export function useInteropAccountApprovalForAllEvent(
 /**
  * Wraps __{@link useContractEvent}__ with `abi` set to __{@link interopAccountABI}__ and `eventName` set to `"ConsecutiveTransfer"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountConsecutiveTransferEvent(
   config: Omit<
@@ -2702,7 +2821,7 @@ export function useInteropAccountConsecutiveTransferEvent(
 /**
  * Wraps __{@link useContractEvent}__ with `abi` set to __{@link interopAccountABI}__ and `eventName` set to `"CreateMainAccount"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountCreateMainAccountEvent(
   config: Omit<
@@ -2721,7 +2840,7 @@ export function useInteropAccountCreateMainAccountEvent(
 /**
  * Wraps __{@link useContractEvent}__ with `abi` set to __{@link interopAccountABI}__ and `eventName` set to `"OwnershipTransferred"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountOwnershipTransferredEvent(
   config: Omit<
@@ -2740,7 +2859,7 @@ export function useInteropAccountOwnershipTransferredEvent(
 /**
  * Wraps __{@link useContractEvent}__ with `abi` set to __{@link interopAccountABI}__ and `eventName` set to `"SetPrice"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountSetPriceEvent(
   config: Omit<
@@ -2759,7 +2878,7 @@ export function useInteropAccountSetPriceEvent(
 /**
  * Wraps __{@link useContractEvent}__ with `abi` set to __{@link interopAccountABI}__ and `eventName` set to `"Transfer"`.
  *
- * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0x32aeb88F0ed67C92AC59E00158b498c2Af3719d7)
+ * [__View Contract on Goerli Etherscan__](https://goerli.etherscan.io/address/0xc2eFb534a929526E7196a3d4E7e29d40F47039bD)
  */
 export function useInteropAccountTransferEvent(
   config: Omit<
@@ -3757,7 +3876,7 @@ export function useInteropAccountNftTransferEvent(
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountRelayABI}__.
  *
- * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x17BC927424230E1b1DE18E5b295A00CCBd636c4F)
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x4bBD0CDD229114E9dBbf9e1855eb32dC7a7fAFA7)
  */
 export function useInteropAccountRelayRead<
   TFunctionName extends string,
@@ -3789,7 +3908,7 @@ export function useInteropAccountRelayRead<
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountRelayABI}__ and `functionName` set to `"deliverables"`.
  *
- * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x17BC927424230E1b1DE18E5b295A00CCBd636c4F)
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x4bBD0CDD229114E9dBbf9e1855eb32dC7a7fAFA7)
  */
 export function useInteropAccountRelayDeliverables<
   TFunctionName extends 'deliverables',
@@ -3822,7 +3941,7 @@ export function useInteropAccountRelayDeliverables<
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountRelayABI}__ and `functionName` set to `"getItems"`.
  *
- * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x17BC927424230E1b1DE18E5b295A00CCBd636c4F)
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x4bBD0CDD229114E9dBbf9e1855eb32dC7a7fAFA7)
  */
 export function useInteropAccountRelayGetItems<
   TFunctionName extends 'getItems',
@@ -3853,9 +3972,42 @@ export function useInteropAccountRelayGetItems<
 }
 
 /**
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link interopAccountRelayABI}__ and `functionName` set to `"owner"`.
+ *
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x4bBD0CDD229114E9dBbf9e1855eb32dC7a7fAFA7)
+ */
+export function useInteropAccountRelayOwner<
+  TFunctionName extends 'owner',
+  TSelectData = ReadContractResult<
+    typeof interopAccountRelayABI,
+    TFunctionName
+  >,
+>(
+  config: Omit<
+    UseContractReadConfig<
+      typeof interopAccountRelayABI,
+      TFunctionName,
+      TSelectData
+    >,
+    'abi' | 'address' | 'functionName'
+  > & { chainId?: keyof typeof interopAccountRelayAddress } = {} as any,
+) {
+  return useContractRead({
+    abi: interopAccountRelayABI,
+    address: interopAccountRelayAddress[80001],
+    functionName: 'owner',
+    ...config,
+  } as UseContractReadConfig<
+    typeof interopAccountRelayABI,
+    TFunctionName,
+    TSelectData
+  >)
+}
+
+/**
  * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountRelayABI}__.
  *
- * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x17BC927424230E1b1DE18E5b295A00CCBd636c4F)
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x4bBD0CDD229114E9dBbf9e1855eb32dC7a7fAFA7)
  */
 export function useInteropAccountRelayWrite<
   TFunctionName extends string,
@@ -3891,7 +4043,7 @@ export function useInteropAccountRelayWrite<
 /**
  * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountRelayABI}__ and `functionName` set to `"createAccount"`.
  *
- * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x17BC927424230E1b1DE18E5b295A00CCBd636c4F)
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x4bBD0CDD229114E9dBbf9e1855eb32dC7a7fAFA7)
  */
 export function useInteropAccountRelayCreateAccount<
   TMode extends WriteContractMode = undefined,
@@ -3934,9 +4086,132 @@ export function useInteropAccountRelayCreateAccount<
 }
 
 /**
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountRelayABI}__ and `functionName` set to `"renounceOwnership"`.
+ *
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x4bBD0CDD229114E9dBbf9e1855eb32dC7a7fAFA7)
+ */
+export function useInteropAccountRelayRenounceOwnership<
+  TMode extends WriteContractMode = undefined,
+  TChainId extends number = keyof typeof interopAccountRelayAddress,
+>(
+  config: TMode extends 'prepared'
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof interopAccountRelayABI,
+          'renounceOwnership'
+        >['request']['abi'],
+        'renounceOwnership',
+        TMode
+      > & {
+        address?: Address
+        chainId?: TChainId
+        functionName?: 'renounceOwnership'
+      }
+    : UseContractWriteConfig<
+        typeof interopAccountRelayABI,
+        'renounceOwnership',
+        TMode
+      > & {
+        abi?: never
+        address?: never
+        chainId?: TChainId
+        functionName?: 'renounceOwnership'
+      } = {} as any,
+) {
+  return useContractWrite<
+    typeof interopAccountRelayABI,
+    'renounceOwnership',
+    TMode
+  >({
+    abi: interopAccountRelayABI,
+    address: interopAccountRelayAddress[80001],
+    functionName: 'renounceOwnership',
+    ...config,
+  } as any)
+}
+
+/**
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountRelayABI}__ and `functionName` set to `"setUri"`.
+ *
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x4bBD0CDD229114E9dBbf9e1855eb32dC7a7fAFA7)
+ */
+export function useInteropAccountRelaySetUri<
+  TMode extends WriteContractMode = undefined,
+  TChainId extends number = keyof typeof interopAccountRelayAddress,
+>(
+  config: TMode extends 'prepared'
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof interopAccountRelayABI,
+          'setUri'
+        >['request']['abi'],
+        'setUri',
+        TMode
+      > & { address?: Address; chainId?: TChainId; functionName?: 'setUri' }
+    : UseContractWriteConfig<typeof interopAccountRelayABI, 'setUri', TMode> & {
+        abi?: never
+        address?: never
+        chainId?: TChainId
+        functionName?: 'setUri'
+      } = {} as any,
+) {
+  return useContractWrite<typeof interopAccountRelayABI, 'setUri', TMode>({
+    abi: interopAccountRelayABI,
+    address: interopAccountRelayAddress[80001],
+    functionName: 'setUri',
+    ...config,
+  } as any)
+}
+
+/**
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link interopAccountRelayABI}__ and `functionName` set to `"transferOwnership"`.
+ *
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x4bBD0CDD229114E9dBbf9e1855eb32dC7a7fAFA7)
+ */
+export function useInteropAccountRelayTransferOwnership<
+  TMode extends WriteContractMode = undefined,
+  TChainId extends number = keyof typeof interopAccountRelayAddress,
+>(
+  config: TMode extends 'prepared'
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof interopAccountRelayABI,
+          'transferOwnership'
+        >['request']['abi'],
+        'transferOwnership',
+        TMode
+      > & {
+        address?: Address
+        chainId?: TChainId
+        functionName?: 'transferOwnership'
+      }
+    : UseContractWriteConfig<
+        typeof interopAccountRelayABI,
+        'transferOwnership',
+        TMode
+      > & {
+        abi?: never
+        address?: never
+        chainId?: TChainId
+        functionName?: 'transferOwnership'
+      } = {} as any,
+) {
+  return useContractWrite<
+    typeof interopAccountRelayABI,
+    'transferOwnership',
+    TMode
+  >({
+    abi: interopAccountRelayABI,
+    address: interopAccountRelayAddress[80001],
+    functionName: 'transferOwnership',
+    ...config,
+  } as any)
+}
+
+/**
  * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountRelayABI}__.
  *
- * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x17BC927424230E1b1DE18E5b295A00CCBd636c4F)
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x4bBD0CDD229114E9dBbf9e1855eb32dC7a7fAFA7)
  */
 export function usePrepareInteropAccountRelayWrite<
   TFunctionName extends string,
@@ -3959,7 +4234,7 @@ export function usePrepareInteropAccountRelayWrite<
 /**
  * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountRelayABI}__ and `functionName` set to `"createAccount"`.
  *
- * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x17BC927424230E1b1DE18E5b295A00CCBd636c4F)
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x4bBD0CDD229114E9dBbf9e1855eb32dC7a7fAFA7)
  */
 export function usePrepareInteropAccountRelayCreateAccount(
   config: Omit<
@@ -3982,9 +4257,78 @@ export function usePrepareInteropAccountRelayCreateAccount(
 }
 
 /**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountRelayABI}__ and `functionName` set to `"renounceOwnership"`.
+ *
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x4bBD0CDD229114E9dBbf9e1855eb32dC7a7fAFA7)
+ */
+export function usePrepareInteropAccountRelayRenounceOwnership(
+  config: Omit<
+    UsePrepareContractWriteConfig<
+      typeof interopAccountRelayABI,
+      'renounceOwnership'
+    >,
+    'abi' | 'address' | 'functionName'
+  > & { chainId?: keyof typeof interopAccountRelayAddress } = {} as any,
+) {
+  return usePrepareContractWrite({
+    abi: interopAccountRelayABI,
+    address: interopAccountRelayAddress[80001],
+    functionName: 'renounceOwnership',
+    ...config,
+  } as UsePrepareContractWriteConfig<
+    typeof interopAccountRelayABI,
+    'renounceOwnership'
+  >)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountRelayABI}__ and `functionName` set to `"setUri"`.
+ *
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x4bBD0CDD229114E9dBbf9e1855eb32dC7a7fAFA7)
+ */
+export function usePrepareInteropAccountRelaySetUri(
+  config: Omit<
+    UsePrepareContractWriteConfig<typeof interopAccountRelayABI, 'setUri'>,
+    'abi' | 'address' | 'functionName'
+  > & { chainId?: keyof typeof interopAccountRelayAddress } = {} as any,
+) {
+  return usePrepareContractWrite({
+    abi: interopAccountRelayABI,
+    address: interopAccountRelayAddress[80001],
+    functionName: 'setUri',
+    ...config,
+  } as UsePrepareContractWriteConfig<typeof interopAccountRelayABI, 'setUri'>)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link interopAccountRelayABI}__ and `functionName` set to `"transferOwnership"`.
+ *
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x4bBD0CDD229114E9dBbf9e1855eb32dC7a7fAFA7)
+ */
+export function usePrepareInteropAccountRelayTransferOwnership(
+  config: Omit<
+    UsePrepareContractWriteConfig<
+      typeof interopAccountRelayABI,
+      'transferOwnership'
+    >,
+    'abi' | 'address' | 'functionName'
+  > & { chainId?: keyof typeof interopAccountRelayAddress } = {} as any,
+) {
+  return usePrepareContractWrite({
+    abi: interopAccountRelayABI,
+    address: interopAccountRelayAddress[80001],
+    functionName: 'transferOwnership',
+    ...config,
+  } as UsePrepareContractWriteConfig<
+    typeof interopAccountRelayABI,
+    'transferOwnership'
+  >)
+}
+
+/**
  * Wraps __{@link useContractEvent}__ with `abi` set to __{@link interopAccountRelayABI}__.
  *
- * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x17BC927424230E1b1DE18E5b295A00CCBd636c4F)
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x4bBD0CDD229114E9dBbf9e1855eb32dC7a7fAFA7)
  */
 export function useInteropAccountRelayEvent<TEventName extends string>(
   config: Omit<
@@ -4002,7 +4346,7 @@ export function useInteropAccountRelayEvent<TEventName extends string>(
 /**
  * Wraps __{@link useContractEvent}__ with `abi` set to __{@link interopAccountRelayABI}__ and `eventName` set to `"CreateSideAccount"`.
  *
- * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x17BC927424230E1b1DE18E5b295A00CCBd636c4F)
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x4bBD0CDD229114E9dBbf9e1855eb32dC7a7fAFA7)
  */
 export function useInteropAccountRelayCreateSideAccountEvent(
   config: Omit<
@@ -4018,5 +4362,30 @@ export function useInteropAccountRelayCreateSideAccountEvent(
   } as UseContractEventConfig<
     typeof interopAccountRelayABI,
     'CreateSideAccount'
+  >)
+}
+
+/**
+ * Wraps __{@link useContractEvent}__ with `abi` set to __{@link interopAccountRelayABI}__ and `eventName` set to `"OwnershipTransferred"`.
+ *
+ * [__View Contract on Polygon Mumbai Polygon Scan__](https://mumbai.polygonscan.com/address/0x4bBD0CDD229114E9dBbf9e1855eb32dC7a7fAFA7)
+ */
+export function useInteropAccountRelayOwnershipTransferredEvent(
+  config: Omit<
+    UseContractEventConfig<
+      typeof interopAccountRelayABI,
+      'OwnershipTransferred'
+    >,
+    'abi' | 'address' | 'eventName'
+  > & { chainId?: keyof typeof interopAccountRelayAddress } = {} as any,
+) {
+  return useContractEvent({
+    abi: interopAccountRelayABI,
+    address: interopAccountRelayAddress[80001],
+    eventName: 'OwnershipTransferred',
+    ...config,
+  } as UseContractEventConfig<
+    typeof interopAccountRelayABI,
+    'OwnershipTransferred'
   >)
 }
