@@ -17,6 +17,7 @@ import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import useAppAddresses from "hooks/useAppAddresses";
 import { useMemo } from "react";
+import { chains } from "@/services/constants";
 
 const MintCardContent = () => {
   const { address } = useAccount();
@@ -66,10 +67,10 @@ const MintCardContent = () => {
           <div className="flex flex-col my-2 gap-1">
             <div className="flex flex-row w-full font-main justify-between">
               <p>{name} </p>
-              {blockExplorer && (
+              {chains[mainChainId] && (
                 <Link
                   target="_blank"
-                  href={`${blockExplorer}/address/${accountContractAddress}`}
+                  href={`${chains[mainChainId].blockExplorers?.default.url}/address/${accountContractAddress}`}
                   className="flex flex-row items-center border border-black px-2 hover:bg-slate-200 hover:cursor-pointer"
                 >
                   <p>{truncateAddress(accountContractAddress, 6)}</p>
