@@ -48,7 +48,8 @@ const MintCardContent = () => {
   });
 
   const progressStats = useMemo(() => {
-    if (!totalSupply || !maxSupply) return { ratio: 0 };
+    if (totalSupply === undefined || maxSupply === undefined)
+      return { ratio: 0 };
 
     return {
       ratio: (Number(totalSupply) / Number(maxSupply)) * 100,
