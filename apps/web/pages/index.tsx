@@ -1,15 +1,24 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import MintCardContent from "components/MintCardContent";
-import OwnedNFTsComponent from "components/OwnedNFTsComponent";
 import classNames from "classnames";
 import Title from "components/Title";
 import polygonIcon from "cryptocurrency-icons/svg/icon/matic.svg";
 import ethereumIcon from "cryptocurrency-icons/svg/icon/eth.svg";
+import useAccountItems from "hooks/useAccountItems";
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
+import useAccountNft from "hooks/useAccountNft";
+import { truncateAddress } from "utils";
+import useChain from "hooks/useChain";
 
 const squareSrc = "https://placehold.co/400x400";
 
 const Home: NextPage = () => {
+  const { itemsMetadata } = useAccountItems();
+  const { metadata } = useAccountNft();
+  const { isMainnet, isPolygon } = useChain();
+
   return (
     <div className="h-full flex border flex-col justify-center items-center">
       <Head>
@@ -23,30 +32,75 @@ const Home: NextPage = () => {
             {/* Metadata Display */}
             <div className="border border-black flex flex-col md:flex-row items-center md:items-start">
               <div className="w-[300px] h-[300px] xl:w-[400px] xl:h-[400px] aspect-square p-4">
-                <img
-                  src={squareSrc}
-                  className="w-full h-full  border border-black"
-                />
+                {metadata && (
+                  <img
+                    src={metadata.image}
+                    className="w-full h-full  border border-black"
+                  />
+                )}
               </div>
               <div className="p-4">
                 <div className="border-b-2 pb-2 mb-4 flex flex-row justify-between">
                   <Title text="Interoperable Wearable Account" />
                   <div className="flex flex-row gap-1">
-                    <img {...polygonIcon} />
                     <img {...ethereumIcon} />
+                    <img {...polygonIcon} />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {Array.from({ length: 3 }).map((_, i) => {
-                    return (
-                      <div key={i}>
-                        <img
-                          src={squareSrc}
-                          className={classNames("h-auto max-w-full")}
-                        />
-                      </div>
-                    );
-                  })}
+                  {itemsMetadata.map(
+                    (
+                      { image, chainId, contractAddress, blockExplorerLink },
+                      i
+                    ) => {
+                      return (
+                        <div
+                          key={i}
+                          className={classNames(
+                            "border-indigo-600 border-2 relative p-2",
+                            {
+                              "border-indigo-600 border-2": isMainnet(chainId),
+                              "border-violet-600 border-2": isPolygon(chainId),
+                            }
+                          )}
+                        >
+                          <img
+                            src={image}
+                            className={classNames("h-auto max-w-full")}
+                          />
+                          <div
+                            className={classNames("border", {
+                              "border-indigo-600 ": isMainnet(chainId),
+                              "border-violet-600 ": isPolygon(chainId),
+                            })}
+                          >
+                            <Link
+                              href={blockExplorerLink}
+                              target="_blank"
+                              className={classNames(
+                                "flex flex-row justify-between p-1 w-full",
+                                {
+                                  "border-indigo-600 hover:bg-indigo-200":
+                                    isMainnet(chainId),
+                                  "border-violet-600 hover:bg-violet-200":
+                                    isPolygon(chainId),
+                                }
+                              )}
+                            >
+                              <p className="text-xs">
+                                {truncateAddress(contractAddress, 6)}
+                              </p>
+                              <ArrowTopRightOnSquareIcon
+                                className={classNames(
+                                  "w-4 h-4 border-2 bg-slate-200"
+                                )}
+                              />
+                            </Link>
+                          </div>
+                        </div>
+                      );
+                    }
+                  )}
                 </div>
                 <div className="pt-4">
                   <p className="text-justify">
