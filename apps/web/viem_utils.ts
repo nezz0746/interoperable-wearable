@@ -11,7 +11,7 @@ if (!mumbaiApiKey) {
   console.log("MUMBAI_ALCHEMY_KEY: ", mumbaiApiKey);
 }
 
-const mumbaiRpcUrl = `${polygonMumbai.rpcUrls.alchemy}/${mumbaiApiKey}`;
+const mumbaiRpcUrl = `${polygonMumbai.rpcUrls.alchemy.http}/${mumbaiApiKey}`;
 const account_key = `0x${process.env.RELAYER_PRIVATE_KEY}` as `0x${string}`;
 const defaultChainId = 80001;
 
