@@ -17,14 +17,15 @@
     "cryptocurrency-icons": "^0.18.1",
     "daisyui": "^3.9.4",
     "ethers": "^5.6.8",
+    "items-metadata": "*",
     "next": "14.0.1",
     "react": "^18.2.0",
     "react-dom": "18.2.0",
+    "react-use": "^17.4.0",
     "shared-config": "*",
     "viem": "^1.18.3",
     "wagmi": "1.4.5",
     "wagmi-config": "*",
-    "items-metadata": "*",
     "zustand": "^4.4.6"
   },
   "devDependencies": {
