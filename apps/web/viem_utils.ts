@@ -1,7 +1,8 @@
-import { Chain, createWalletClient, http, publicActions } from "viem";
+import { createWalletClient, http, publicActions } from "viem";
 
 import { privateKeyToAccount } from "viem/accounts";
 import { polygonMumbai } from "viem/chains";
+import { chains } from "./services/constants";
 
 const mumbaiApiKey = process.env.MUMBAI_ALCHEMY_KEY as string;
 
@@ -20,10 +21,6 @@ if (!account_key) {
 } else {
   console.log("RELAYER_PRIVATE_KEY: OK [...]");
 }
-
-const chains: Record<number, Chain> = {
-  80001: polygonMumbai,
-};
 
 const rpcUrls: Record<number, string> = {
   80001: mumbaiRpcUrl,

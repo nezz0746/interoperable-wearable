@@ -17,6 +17,8 @@ import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import useAppAddresses from "hooks/useAppAddresses";
 import { useMemo } from "react";
+import { chains } from "@/services/constants";
+import Card from "./Card";
 
 const MintCardContent = () => {
   const { address } = useAccount();
@@ -59,41 +61,43 @@ const MintCardContent = () => {
   }, [totalSupply, maxSupply]);
 
   return (
-    <>
-      <div className=" border border-black max-h-[400px] flex flex-col p-4">
-        <div className="flex flex-col gap-2">
-          <Title text="Mint" />
-          <div className="flex flex-col my-2 gap-1">
-            <div className="flex flex-row w-full font-main justify-between">
-              <p>{name} </p>
-              {blockExplorer && (
-                <Link
-                  target="_blank"
-                  href={`${blockExplorer}/address/${accountContractAddress}`}
-                  className="flex flex-row items-center border border-black px-2 hover:bg-slate-200 hover:cursor-pointer"
-                >
-                  <p>{truncateAddress(accountContractAddress, 6)}</p>
-                  <ArrowTopRightOnSquareIcon className="w-4 h-4 ml-1" />
-                </Link>
-              )}
+    <div className="flex flex-col gap-4">
+      <Card>
+        <div className="max-h-[400px] flex flex-col p-4">
+          <div className="flex flex-col gap-2">
+            <Title text="Mint" />
+            <div className="flex flex-col my-2 gap-1">
+              <div className="flex flex-row w-full font-main justify-between">
+                <p>{name} </p>
+                {chains[mainChainId] && (
+                  <Link
+                    target="_blank"
+                    href={`${chains[mainChainId].blockExplorers?.default.url}/address/${accountContractAddress}`}
+                    className="flex flex-row items-center border border px-2 hover:bg-slate-200 hover:cursor-pointer"
+                  >
+                    <p>{truncateAddress(accountContractAddress, 6)}</p>
+                    <ArrowTopRightOnSquareIcon className="w-4 h-4 ml-1" />
+                  </Link>
+                )}
+              </div>
+              <div className="flex flex-row w-full font-main justify-between">
+                <p>Price</p>
+                <p>{price ? formatEther(price) : "--"} ETH</p>
+              </div>
+              {progressStats && <Progress {...progressStats} />}
             </div>
-            <div className="flex flex-row w-full font-main justify-between">
-              <p>Price</p>
-              <p>{price ? formatEther(price) : "--"} ETH</p>
-            </div>
-            {progressStats && <Progress {...progressStats} />}
+            {address && price ? (
+              <MintButton
+                enabled={!mintFunctionsDisabled}
+                address={address}
+                price={price}
+              />
+            ) : null}
           </div>
-          {address && price ? (
-            <MintButton
-              enabled={!mintFunctionsDisabled}
-              address={address}
-              price={price}
-            />
-          ) : null}
         </div>
-      </div>
+      </Card>
       <OwnedNFTsComponent />
-    </>
+    </div>
   );
 };
 
@@ -112,9 +116,9 @@ const Progress = ({ ratio, totalSupply, maxSupply }: ProgressProps) => {
           {totalSupply}/{maxSupply}
         </p>
       </div>
-      <div className="relative w-full h-2 border border-black">
+      <div className="relative w-full h-2 border">
         <div
-          className="absolute top-0 left-0 h-2 bg-green-500"
+          className="absolute top-0 left-0 h-2"
           style={{ width: `${ratio}%` }}
         />
       </div>
@@ -158,7 +162,7 @@ const MintButton = ({ address, price, enabled }: MintButtonProps) => {
 
   return (
     <button
-      className={classNames("btn btn-neutral rounded-none")}
+      className={classNames("btn btn-accent rounded-none")}
       disabled={disabled}
       onClick={onClick}
     >

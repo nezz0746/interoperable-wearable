@@ -1,6 +1,8 @@
+import { chains } from "@/services/constants";
 import useChain from "./useChain";
 import { useEffect, useMemo, useState } from "react";
 import { ItemMetadata, ItemProps, fetchMetadata } from "utils";
+import { Chain, goerli, polygonMumbai } from "viem/chains";
 import {
   useInteropAccountGetItems,
   useInteropAccountRelayGetItems,
@@ -8,7 +10,7 @@ import {
 
 const useAccountItems = () => {
   const [itemsMetadata, setItemsMetadata] = useState<ItemMetadata[]>([]);
-  const { mainChainId, relayChainId, chains } = useChain();
+  const { mainChainId, relayChainId } = useChain();
 
   const { data: accountDeliverable } = useInteropAccountGetItems({
     // @ts-ignore
@@ -46,10 +48,7 @@ const useAccountItems = () => {
           image: `https://ipfs.io/ipfs/${data.image.split("//")[1]}`,
           contractAddress,
           chainId,
-          blockExplorerLink: `${
-            chains.find((chain) => chain.id === chainId)?.blockExplorers
-              ?.default.url
-          }/token/${contractAddress}`,
+          blockExplorerLink: `${chains[chainId]?.blockExplorers?.default.url}/token/${contractAddress}`,
         };
       })
     );
