@@ -6,6 +6,8 @@ import { useAccount } from "wagmi";
 import { useAccountNftStore } from "hooks/useAccountNft";
 import Card from "./Card";
 import Link from "next/link";
+import useChain from "hooks/useChain";
+import { chains } from "@/services/constants";
 
 const squareSrc = "https://placehold.co/400x400";
 
@@ -29,16 +31,25 @@ type OwnedNFTListProps = {
 
 const OwnedNFTList = ({ address }: OwnedNFTListProps) => {
   const { metadata } = useAccountNftStore();
+  const { mainChainId } = useChain();
   const { nftsWithAccount, pendingNftsWithAccount } = useNfts({
     address,
   });
 
   return (
-    <div className="">
+    <div className="flex flex-col gap-1">
       {nftsWithAccount.map((nft) => {
         return (
-          <Card
+          <div
             key={nft.account}
+            onClick={() => {
+              window.open(
+                chains[mainChainId].blockExplorers?.default.url +
+                  "/address/" +
+                  nft.account,
+                "_blank"
+              );
+            }}
             className="border-none hover:bg-slate-500 hover:cursor-pointer"
           >
             <div className="h-[60px] flex flex-row gap-2">
@@ -47,10 +58,12 @@ const OwnedNFTList = ({ address }: OwnedNFTListProps) => {
                 <p className="font-main font-bold">
                   Interoperable Wearable Account #{nft.tokenId}
                 </p>
-                <p className="text-xs font-main font-light">{nft.account}</p>
+                <p className="text-xs font-main font-light">
+                  {truncateAddress(nft.account, 10)}
+                </p>
               </div>
             </div>
-          </Card>
+          </div>
         );
       })}
       {pendingNftsWithAccount && (
