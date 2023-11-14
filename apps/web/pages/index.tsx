@@ -35,10 +35,6 @@ const Home: NextPage = () => {
                 <div className="p-4">
                   <div className="border-b-2 pb-2 mb-4 flex flex-row justify-between">
                     <Title text={metadata?.name ?? ""} />
-                    <div className="flex flex-row gap-1 items-center">
-                      <img {...icons.ethereum} className="h-7 w-7" />
-                      <img {...icons.polygon} className="h-7 w-7" />
-                    </div>
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {itemsMetadata.map((itemMetadata, i) => {
