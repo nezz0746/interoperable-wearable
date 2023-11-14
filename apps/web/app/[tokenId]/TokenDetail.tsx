@@ -1,6 +1,6 @@
 import { Variants, motion } from "framer-motion";
 import { Panel } from "./Panel";
-import { TbaOwnedNft } from "./page";
+import { TbaOwnedNft } from "iframe-utils";
 
 interface Props {
   className?: string;

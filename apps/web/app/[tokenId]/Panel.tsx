@@ -3,8 +3,8 @@ import { useState } from "react";
 import ethereumIcon from "cryptocurrency-icons/svg/icon/eth.svg";
 import polygonIcon from "cryptocurrency-icons/svg/icon/matic.svg";
 import classNames from "classnames";
-import { TbaOwnedNft } from "./page";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
+import { TbaOwnedNft } from "iframe-utils";
 
 export const Check = (props: React.SVGProps<SVGSVGElement>) => {
   return (
