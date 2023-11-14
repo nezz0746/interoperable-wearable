@@ -2,7 +2,6 @@ import { chainIdToChain } from "shared-config";
 import useChain from "./useChain";
 import { useEffect, useMemo, useState } from "react";
 import { ItemMetadata, ItemProps, fetchMetadata } from "utils";
-import { Chain, goerli, polygonMumbai } from "viem/chains";
 import {
   useInteropAccountGetItems,
   useInteropAccountRelayGetItems,

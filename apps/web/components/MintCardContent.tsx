@@ -23,8 +23,7 @@ import { chainIdToChain } from "shared-config";
 const MintCardContent = () => {
   const { address } = useAccount();
   const { accountContractAddress } = useAppAddresses();
-  const { unsupportedChain, blockExplorer, currentChainId, mainChainId } =
-    useChain();
+  const { unsupportedChain, currentChainId, mainChainId } = useChain();
 
   const mintFunctionsDisabled =
     currentChainId !== mainChainId || unsupportedChain;
