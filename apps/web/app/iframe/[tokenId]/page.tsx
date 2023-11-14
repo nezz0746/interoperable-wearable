@@ -4,25 +4,30 @@ import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { TokenboundClient } from "@tokenbound/sdk";
 import { TokenDetail } from "./TokenDetail";
-import {
-  TbaOwnedNft,
-  TokenParams,
-  getAccount,
-  getNfts,
-  useNft,
-} from "iframe-utils";
+import { getAccount, getNfts } from "iframe-utils";
 import { interopAccountAddress } from "utils";
+import { useNft } from "hooks/useNftsIframe";
 import {
   interopAccountChainId,
   interopAccoutRelayChainId,
-} from "@/services/constants";
-// Registry ABI
+} from "shared-config";
+import { TbaOwnedNft } from "types";
+
+export interface TokenParams {
+  params: {
+    tokenId: string;
+  };
+  searchParams: {
+    disableloading: string;
+    logo?: string;
+  };
+}
 
 export default function Token({ params, searchParams }: TokenParams) {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [nfts, setNfts] = useState<TbaOwnedNft[]>([]);
   const { tokenId } = params;
-  const { disableloading, logo } = searchParams;
+  const { disableloading } = searchParams;
   const [showTokenDetail, setShowTokenDetail] = useState(false);
   const tokenboundClient = new TokenboundClient({
     chainId: interopAccountChainId,
@@ -127,7 +132,10 @@ export default function Token({ params, searchParams }: TokenParams) {
             {showLoading ? (
               <div className="z-10 w-full h-full flex flex-col justify-center items-center">
                 <div className="w-1/2 mt-[40%] ml-[25px] h-1/2">
-                  <img src="iframe/gaian_logo.png" className="animate-bounce" />
+                  <img
+                    src="/iframe/gaian_logo.png"
+                    className="animate-bounce"
+                  />
                 </div>
               </div>
             ) : (

@@ -17,8 +17,8 @@ import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import useAppAddresses from "hooks/useAppAddresses";
 import { useMemo } from "react";
-import { chains } from "@/services/constants";
 import Card from "./Card";
+import { chainIdToChain } from "shared-config";
 
 const MintCardContent = () => {
   const { address } = useAccount();
@@ -69,11 +69,11 @@ const MintCardContent = () => {
             <div className="flex flex-col my-2 gap-1">
               <div className="flex flex-row w-full font-main justify-between">
                 <p>{name} </p>
-                {chains[mainChainId] && (
+                {chainIdToChain[mainChainId] && (
                   <Link
                     target="_blank"
-                    href={`${chains[mainChainId].blockExplorers?.default.url}/address/${accountContractAddress}`}
-                    className="flex flex-row items-center border border px-2 hover:bg-slate-200 hover:cursor-pointer"
+                    href={`${chainIdToChain[mainChainId].blockExplorers?.default.url}/address/${accountContractAddress}`}
+                    className="flex flex-row items-center border px-2 hover:bg-slate-200 hover:cursor-pointer"
                   >
                     <p>{truncateAddress(accountContractAddress, 6)}</p>
                     <ArrowTopRightOnSquareIcon className="w-4 h-4 ml-1" />

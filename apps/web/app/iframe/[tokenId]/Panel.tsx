@@ -1,10 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
 import { useState } from "react";
-import ethereumIcon from "cryptocurrency-icons/svg/icon/eth.svg";
-import polygonIcon from "cryptocurrency-icons/svg/icon/matic.svg";
 import classNames from "classnames";
+import {
+  chainIdToEtherscanUrl,
+  chainIdToIcon,
+  chainIdToOpenseaAssetUrl,
+} from "shared-config";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
-import { TbaOwnedNft } from "iframe-utils";
+import { TbaOwnedNft } from "types";
+import { truncateAddress } from "utils";
 
 export const Check = (props: React.SVGProps<SVGSVGElement>) => {
   return (
@@ -42,7 +46,7 @@ export function ExternalLink({ link, className, ...rest }: ExternalLinkProps) {
       className={classNames("cursor-pointer", className)}
       {...rest}
     >
-      <ArrowTopRightOnSquareIcon className="h-5 w-5 fill-[#A1A1AA]" />
+      <ArrowTopRightOnSquareIcon className="h-5 w-5 stroke-slate-100" />
     </a>
   );
 }
@@ -83,25 +87,9 @@ export const MediaViewer = ({ url, isVideo = false }: MediaViewerProps) => {
   );
 };
 
-export const chainIdToEtherscanUrl: Record<number, string> = {
-  1: "https://etherscan.io",
-  5: "https://goerli.etherscan.io",
-  11155111: "https://sepolia.etherscan.io",
-  10: "https://optimistic.etherscan.io",
-  420: "https://goerli-optimism.etherscan.io",
-  137: "https://polygonscan.com",
-  80001: "https://mumbai.polygonscan.com",
-};
-
 interface GetEtherscanLinkParams {
   chainId?: number;
   address?: string;
-}
-
-export function shortenAddress(address: string): string {
-  const start = address.slice(0, 4);
-  const end = address.slice(-3);
-  return `${start}...${end}`;
 }
 
 export const getEtherscanLink = ({
@@ -118,24 +106,7 @@ export const getEtherscanLink = ({
   return link;
 };
 
-export const chainIdToOpenseaAssetUrl: Record<number, string> = {
-  1: "https://opensea.io/assets/ethereum",
-  5: "https://testnets.opensea.io/assets/goerli",
-  11155111: "https://testnets.opensea.io/assets/sepolia",
-  10: "https://opensea.io/assets/optimism",
-  420: "https://opensea.io/assets/optimism-goerli",
-  137: "https://opensea.io/assets/matic",
-  80001: "https://testnets.opensea.io/assets/mumbai",
-};
-
-const chainIdToIcon: Record<number, any> = {
-  1: ethereumIcon,
-  5: ethereumIcon,
-  137: polygonIcon,
-  80001: polygonIcon,
-};
-
-interface Props {
+interface PanelProps {
   className?: string;
   account?: string;
   tokens: TbaOwnedNft[];
@@ -149,7 +120,7 @@ export const Panel = ({
   tokens,
   title,
   chainId,
-}: Props) => {
+}: PanelProps) => {
   const [copied, setCopied] = useState(false);
 
   const displayedAddress = account;
@@ -198,7 +169,7 @@ export const Panel = ({
                 <Check />
               </span>
             ) : (
-              shortenAddress(displayedAddress)
+              truncateAddress(displayedAddress, 6)
             )}
           </span>
           <ExternalLink className="h-[20px] w-[20px]" link={etherscanLink} />

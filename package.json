@@ -14,6 +14,7 @@
     "test": "turbo run test",
     "test:force": "turbo run test --force",
     "add:web": "yarn workspace web add",
+    "add:shared-config": "yarn workspace shared-config add",
     "add:wagmi": "yarn workspace wagmi-config add",
     "add:actions": "yarn workspace actions add",
     "add:items-metadata": "yarn workspace items-metadata add",

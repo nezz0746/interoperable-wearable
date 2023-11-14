@@ -6,12 +6,11 @@ import { alchemyProvider } from "wagmi/providers/alchemy";
 
 import {
   projectId,
-  appName,
+  alchemy_key,
   localChainEnabled,
   testnetChainEnabled,
   mainnetChainEnabled,
-  goerliApiKey,
-  mumbaiApiKey,
+  appName,
 } from "shared-config";
 
 let defaultChain: Chain;
@@ -33,8 +32,7 @@ if (mainnetChainEnabled) {
 }
 
 const { chains, publicClient } = configureChains(appChains, [
-  alchemyProvider({ apiKey: goerliApiKey }),
-  alchemyProvider({ apiKey: mumbaiApiKey }),
+  alchemyProvider({ apiKey: alchemy_key }),
   publicProvider(),
 ]);
 

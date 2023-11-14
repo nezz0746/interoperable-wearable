@@ -1,8 +1,8 @@
 import { Variants, motion } from "framer-motion";
 import { Panel } from "./Panel";
-import { TbaOwnedNft } from "iframe-utils";
+import { TbaOwnedNft } from "types";
 
-interface Props {
+interface TokenDetailProps {
   className?: string;
   isOpen: boolean;
   handleOpenClose: (arg0: boolean) => void;
@@ -25,7 +25,7 @@ export const TokenDetail = ({
   tokens,
   title,
   chainId,
-}: Props) => {
+}: TokenDetailProps) => {
   let currentAnimate = isOpen ? "open" : "closed";
 
   return (
@@ -36,7 +36,7 @@ export const TokenDetail = ({
         initial="unHovered"
       >
         <img
-          src="iframe/logo.png"
+          src="/iframe/logo.png"
           className="h-7 w-7"
           onClick={() => handleOpenClose(!isOpen)}
         />

@@ -1,3 +1,4 @@
+import { Nft, OwnedNft } from "alchemy-sdk";
 import { Address } from "viem";
 import {
   interopAccountAddress as interopAccountAddressImported,
@@ -40,3 +41,37 @@ export const fetchMetadata = async (cid: string) => {
 
   return res;
 };
+
+export function getAlchemyImageSrc(token?: Nft | OwnedNft) {
+  // mint count for selected tokens
+
+  if (!token) {
+    return "/no-img.jpg";
+  }
+
+  const src =
+    token.media[0]?.gateway ||
+    token.media[0]?.thumbnail ||
+    token.contract?.openSea?.imageUrl ||
+    "/no-img.jpg";
+
+  return src;
+}
+
+interface FormatImageReturnParams {
+  imageData?: string | string[];
+  loading: boolean;
+}
+
+export function formatImageReturn({
+  imageData,
+  loading,
+}: FormatImageReturnParams): string[] | null {
+  if (loading) return null;
+
+  if (!imageData) {
+    return ["/no-img.jpg"];
+  }
+
+  return typeof imageData === "string" ? [imageData] : imageData;
+}

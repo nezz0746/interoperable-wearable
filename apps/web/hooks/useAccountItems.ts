@@ -1,4 +1,4 @@
-import { chains } from "@/services/constants";
+import { chainIdToChain } from "shared-config";
 import useChain from "./useChain";
 import { useEffect, useMemo, useState } from "react";
 import { ItemMetadata, ItemProps, fetchMetadata } from "utils";
@@ -48,7 +48,7 @@ const useAccountItems = () => {
           image: `https://ipfs.io/ipfs/${data.image.split("//")[1]}`,
           contractAddress,
           chainId,
-          blockExplorerLink: `${chains[chainId]?.blockExplorers?.default.url}/token/${contractAddress}`,
+          blockExplorerLink: `${chainIdToChain[chainId]?.blockExplorers?.default.url}/token/${contractAddress}`,
         };
       })
     );

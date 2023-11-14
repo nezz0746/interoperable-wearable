@@ -1,4 +1,5 @@
-import { defaultChainId, getClient } from "../viem_utils";
+import { interopAccoutRelayChainId } from "shared-config";
+import { getWalletClient } from "../viem_utils";
 import {
   interopAccountRelayABI,
   interopAccountRelayAddress,
@@ -20,9 +21,10 @@ export const createAccountOnSidechain = async ({
   tokenContract,
   tokenId,
 }: AccountCreationArgs) => {
-  const client = getClient();
+  const client = getWalletClient(interopAccoutRelayChainId);
 
-  const accountAccountRelayAddress = interopAccountRelayAddress[defaultChainId];
+  const accountAccountRelayAddress =
+    interopAccountRelayAddress[interopAccoutRelayChainId];
 
   const numberOfDeliverables = (
     await client.readContract({

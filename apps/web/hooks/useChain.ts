@@ -1,7 +1,7 @@
 import {
   interopAccountChainId,
   interopAccoutRelayChainId,
-} from "services/constants";
+} from "shared-config";
 import { useNetwork } from "wagmi";
 import { defaultChain } from "wagmi-config/wagmi";
 import { localhost } from "wagmi/chains";

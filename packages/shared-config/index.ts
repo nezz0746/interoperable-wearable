@@ -1,24 +1,6 @@
-export const appName = "Typescript Starter App";
-
-export const projectId =
-  process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "YOUR_PROJECT_ID";
-export const baseAlchemyKey =
-  process.env.NEXT_PUBLIC_BASE_ALCHEMY_KEY || "YOUR_ALCHEMY_KEY";
-export const localChainEnabled =
-  process.env.NEXT_PUBLIC_LOCAL_CHAIN_ENABLED === "true";
-
-export const testnetChainEnabled =
-  process.env.NEXT_PUBLIC_TESTNET_CHAINS_ENABLED === "true";
-
-export const mainnetChainEnabled =
-  process.env.NEXT_PUBLIC_MAINNET_CHAINS_ENABLED === "true";
-
-export const mumbaiApiKey = process.env
-  .NEXT_PUBLIC_MUMBAI_ALCHEMY_KEY as string;
-
-export const goerliApiKey = process.env
-  .NEXT_PUBLIC_GOERLI_ALCHEMY_KEY as string;
-
-if (!mumbaiApiKey || !goerliApiKey) {
-  throw new Error("Missing Alchemy API key");
-}
+export * from "./variables";
+export * from "./viem";
+export * from "./tokenbound";
+export * from "./nfts";
+export * from "./app";
+export * from "./assets";
