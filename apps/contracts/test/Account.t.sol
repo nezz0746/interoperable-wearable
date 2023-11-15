@@ -156,6 +156,7 @@ contract AccountTest is BaseAccount {
 contract InteropAccountTest is BaseAccount {
     InteropAccount interopAccount;
     address deployer = label("deployer");
+    address minter = label("minter");
 
     function setUp() public {
         AccountItemConfiguration[]
@@ -172,7 +173,7 @@ contract InteropAccountTest is BaseAccount {
             InteropMainConfiguration({
                 name: "MockERC721",
                 symbol: "MockERC721",
-                uri: "https://example.com/{id}.json",
+                uri: "https://gaian.com/metadata/",
                 maxSupply: 100,
                 price: 0.1 ether
             }),
@@ -181,6 +182,15 @@ contract InteropAccountTest is BaseAccount {
             address(accountProxy),
             address(implementation)
         );
+    }
+
+    function testBaseURI() public {
+        vm.deal(minter, 2 ether);
+
+        vm.prank(minter);
+        interopAccount.createMainAccount{value: 0.1 ether}(minter);
+
+        assertEq(interopAccount.tokenURI(1), "https://gaian.com/metadata/1");
     }
 
     function testOnlyOwnerCanSetUri() public {
