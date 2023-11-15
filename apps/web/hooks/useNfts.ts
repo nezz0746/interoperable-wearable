@@ -1,4 +1,3 @@
-import nft from "@/services/alchemy";
 import { useCallback, useEffect, useState } from "react";
 import { Address } from "viem";
 import { useWalletClient } from "wagmi";
@@ -6,6 +5,7 @@ import { TokenboundClient } from "@tokenbound/sdk";
 import { NftWithAccount, useNftsStore } from "./useNftsStore";
 import useChain from "./useChain";
 import useAppAddresses from "./useAppAddresses";
+import { getAlchemyNFT } from "shared-config";
 
 type UseNFTProps = {
   address: Address;
@@ -26,9 +26,10 @@ const useNfts = ({ address }: UseNFTProps) => {
   );
 
   const fetchNfts = useCallback(async () => {
-    if (!nft[chainId] || !walletClient) return;
+    const nft = getAlchemyNFT(chainId);
+    if (!nft || !walletClient) return;
 
-    const data = await nft[chainId].getMintedNfts(address, {
+    const data = await nft.getMintedNfts(address, {
       contractAddresses: [accountContractAddress],
     });
 

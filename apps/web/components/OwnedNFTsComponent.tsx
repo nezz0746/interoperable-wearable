@@ -5,9 +5,8 @@ import Title from "./Title";
 import { useAccount } from "wagmi";
 import { useAccountNftStore } from "hooks/useAccountNft";
 import Card from "./Card";
-import Link from "next/link";
 import useChain from "hooks/useChain";
-import { chains } from "@/services/constants";
+import { chainIdToChain } from "shared-config";
 
 const squareSrc = "https://placehold.co/400x400";
 
@@ -44,7 +43,7 @@ const OwnedNFTList = ({ address }: OwnedNFTListProps) => {
             key={nft.account}
             onClick={() => {
               window.open(
-                chains[mainChainId].blockExplorers?.default.url +
+                chainIdToChain[mainChainId].blockExplorers?.default.url +
                   "/address/" +
                   nft.account,
                 "_blank"
