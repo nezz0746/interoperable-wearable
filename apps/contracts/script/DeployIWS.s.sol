@@ -40,7 +40,7 @@ contract DeployIWS is BaseScript {
             memory mainConfiguration = InteropMainConfiguration(
                 "Gaian Wearable Pack",
                 "GWP",
-                "ipfs://bafkreifukc4gawybgl4736ltkwwoqoaxcl77r45yyf56u2qxu6xodutw2y",
+                "https://gaian-wearable.vercel.app/api/metadata/",
                 200,
                 0.05 ether
             );
