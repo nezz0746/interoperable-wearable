@@ -3,7 +3,16 @@ import useChain from "hooks/useChain";
 import Link from "next/link";
 import { ItemMetadata } from "utils";
 
-const AccountItem = ({ chainId, image, blockExplorerLink }: ItemMetadata) => {
+const formatWearableName = (name: string) => {
+  return name.includes("-") ? name.split("-")[1] : name;
+};
+
+const AccountItem = ({
+  chainId,
+  image,
+  name,
+  blockExplorerLink,
+}: ItemMetadata) => {
   const { isMainnet, isPolygon } = useChain();
 
   const isMainnetChain = isMainnet(chainId);
@@ -21,6 +30,11 @@ const AccountItem = ({ chainId, image, blockExplorerLink }: ItemMetadata) => {
         )}
       >
         <img src={image} className={classNames("h-auto max-w-full")} />
+        <div className="flex flex-row items-center justify-between">
+          <p className="font-bold text-white text-sm">
+            {formatWearableName(name)}
+          </p>
+        </div>
       </div>
     </Link>
   );
