@@ -15,7 +15,7 @@ export async function GET(req: NextRequest, { params: { tokenId } }: Params) {
   return NextResponse.json({
     name: "Gaian Wearable Pack #" + tokenId,
     description: "Gaian Pack: Includes 5 wearable.",
-    image: "ipfs://bafkreifukc4gawybgl4736ltkwwoqoaxcl77r45yyf56u2qxu6xodutw2y",
+    image: "ipfs://bafkreig7wuoesv6a5pas27skxzg2i572pteox2scpn5qrgr5wzxsdofdya",
     animation_url: `${protocol}://${url}/iframe/${tokenId}`,
   });
 }
