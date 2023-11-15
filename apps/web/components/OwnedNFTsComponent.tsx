@@ -3,10 +3,10 @@ import { truncateAddress } from "utils";
 import { Address } from "viem";
 import Title from "./Title";
 import { useAccount } from "wagmi";
-import { useAccountNftStore } from "hooks/useAccountNft";
 import Card from "./Card";
 import useChain from "hooks/useChain";
 import { chainIdToChain } from "shared-config";
+import useAccountNft from "hooks/useAccountNft";
 
 const squareSrc = "https://placehold.co/400x400";
 
@@ -29,7 +29,7 @@ type OwnedNFTListProps = {
 };
 
 const OwnedNFTList = ({ address }: OwnedNFTListProps) => {
-  const { metadata } = useAccountNftStore();
+  const { metadata } = useAccountNft();
   const { mainChainId } = useChain();
   const { nftsWithAccount, pendingNftsWithAccount } = useNfts({
     address,
