@@ -23,11 +23,11 @@ const AccountItem = ({
     <Link href={blockExplorerLink} target="_blank">
       <div
         className={classNames(
-          "border-indigo-600 relative px-2 pt-2 pb-4 flex flex-col gap-1 bg-opacity-50 hover:bg-opacity-70 hover:cursor-pointer",
+          "relative px-2 pt-2 pb-4 flex flex-col gap-1 bg-opacity-50 hover:bg-opacity-70 hover:cursor-pointer to-slate-800",
           {
             "border-2 border-[#803DE1] bg-gradient-to-b  from-[#803DE1] ":
               isPolygonChain,
-            "border-2 border-[#3339BC] bg-gradient-to-b  from-[#3339BC] ":
+            "border-2 border-[#3339BC] bg-gradient-to-b  from-[#3339BC]":
               isMainnetChain,
           }
         )}

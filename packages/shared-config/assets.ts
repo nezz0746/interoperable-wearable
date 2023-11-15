@@ -2,6 +2,7 @@ import op from "./icons/op.svg";
 import polygon from "./icons/polygon.svg";
 import ethereum from "./icons/ethereum.svg";
 import base from "./icons/base.svg";
+import opensea from "./icons/os.svg";
 
 export const chainIdToIcon: Record<number, any> = {
   1: ethereum,
@@ -19,4 +20,5 @@ export const icons = {
   polygon,
   ethereum,
   base,
+  opensea,
 };
