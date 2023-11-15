@@ -6,7 +6,8 @@ import useAccountItems from "hooks/useAccountItems";
 import useAccountNft from "hooks/useAccountNft";
 import AccountItem from "components/AccountItem";
 import Card from "components/Card";
-import { icons } from "shared-config";
+import ethereum from "cryptocurrency-icons/svg/color/eth.svg";
+import polygon from "cryptocurrency-icons/svg/color/matic.svg";
 
 const Home: NextPage = () => {
   const { itemsMetadata } = useAccountItems();
@@ -36,8 +37,8 @@ const Home: NextPage = () => {
                   <div className="border-b-2 pb-2 mb-4 flex flex-row justify-between">
                     <Title text={metadata?.name ?? ""} />
                     <div className="flex flex-row gap-1">
-                      <img {...icons.ethereum} className="h-6 w-6" />
-                      <img {...icons.polygon} className="h-6 w-6" />
+                      <img {...ethereum} className="h-6 w-6" />
+                      <img {...polygon} className="h-6 w-6" />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
