@@ -140,9 +140,7 @@ export default function Token({ params, searchParams }: TokenParams) {
               </div>
             ) : (
               <div
-                className={`bg-white h-full w-full grid grid-cols-1 grid-rows-1 transition ${
-                  imagesLoaded ? "" : "blur-xl"
-                }`}
+                className={`h-full w-full grid grid-cols-1 grid-rows-1 transition`}
               >
                 {nftImages ? (
                   nftImages?.map((image, i) => (
