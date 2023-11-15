@@ -7,7 +7,7 @@ const useAccountNft = () => {
 
   return {
     metadata: {
-      name: "",
+      name: "Gaian Wearable Pack",
       description: "",
       blockExplorerLink: "",
       image: `/main.png`,
